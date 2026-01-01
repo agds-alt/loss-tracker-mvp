@@ -19,6 +19,9 @@ const actionTypes = {
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const
 
+// Type definition for action types
+type ActionTypeKeys = typeof actionTypes[keyof typeof actionTypes]
+
 let count = 0
 
 function genId() {

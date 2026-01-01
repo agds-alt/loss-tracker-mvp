@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatCurrency, formatNumber } from "@/lib/utils"
+import { formatCurrency } from "@/lib/utils"
 import { Database } from "@/types/database.types"
 import { AlertTriangle } from "lucide-react"
 

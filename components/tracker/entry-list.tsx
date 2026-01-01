@@ -50,7 +50,7 @@ const lossSchema = z.object({
 export function EntryList({ losses: initialLosses }: EntryListProps) {
   const router = useRouter()
   const { toast } = useToast()
-  const [losses, setLosses] = useState(initialLosses)
+  const losses = initialLosses
   const [currentPage, setCurrentPage] = useState(1)
   const [filter, setFilter] = useState<"all" | "judol" | "crypto">("all")
   const [search, setSearch] = useState("")
@@ -131,7 +131,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
 
       setEditModalOpen(false)
       router.refresh()
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -167,7 +167,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
 
       setDeleteModalOpen(false)
       router.refresh()
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",
