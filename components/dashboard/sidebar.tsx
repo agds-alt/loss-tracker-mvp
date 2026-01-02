@@ -51,15 +51,15 @@ export function Sidebar({ user }: SidebarProps) {
 
   return (
     <aside className="hidden md:flex md:flex-col w-64 border-r bg-card">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-primary">Loss Tracker</h1>
-        <p className="text-sm text-muted-foreground mt-1">Financial Freedom Journey</p>
+      <div className="p-4">
+        <h1 className="text-lg font-bold text-primary">Loss Tracker</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">Financial Freedom Journey</p>
       </div>
 
-      <div className="px-4 py-4 border-y">
-        <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-lg font-semibold text-primary">
+      <div className="px-3 py-3 border-y">
+        <div className="flex items-center space-x-2.5">
+          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <span className="text-base font-semibold text-primary">
               {user.username?.[0]?.toUpperCase() || "U"}
             </span>
           </div>
@@ -70,7 +70,7 @@ export function Sidebar({ user }: SidebarProps) {
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-2.5 py-3 space-y-0.5">
         {navigation.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href
@@ -81,7 +81,7 @@ export function Sidebar({ user }: SidebarProps) {
               key={item.name}
               href={isDisabled ? "#" : item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                "flex items-center gap-2.5 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : isDisabled
@@ -98,20 +98,20 @@ export function Sidebar({ user }: SidebarProps) {
                 }
               }}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-4 w-4" />
               {item.name}
             </Link>
           )
         })}
       </nav>
 
-      <div className="p-3 border-t">
+      <div className="p-2.5 border-t">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="w-full justify-start gap-2.5 text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
           onClick={handleLogout}
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-4 w-4" />
           Logout
         </Button>
       </div>

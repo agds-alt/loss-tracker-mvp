@@ -26,10 +26,10 @@ export default async function TrackerPage() {
     .single()
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">My Tracker</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">My Tracker</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
           Track all your gambling and crypto losses in one place.
         </p>
       </div>

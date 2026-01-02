@@ -126,22 +126,39 @@ export function QuickActions() {
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+        <CardHeader className="p-3 sm:p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-4">
-          <Button variant="judol" onClick={() => setJudolModalOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Judol Loss
-          </Button>
-          <Button variant="crypto" onClick={() => setCryptoModalOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Crypto Loss
-          </Button>
-          <Button variant="outline" onClick={() => router.push("/tracker")}>
-            <FileText className="mr-2 h-4 w-4" />
-            View Full Report
-          </Button>
+        <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 md:gap-4">
+            <Button
+              variant="judol"
+              onClick={() => setJudolModalOpen(true)}
+              className="text-xs sm:text-sm h-9 sm:h-10"
+            >
+              <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Add Judol</span>
+              <span className="sm:hidden">Judol</span>
+            </Button>
+            <Button
+              variant="crypto"
+              onClick={() => setCryptoModalOpen(true)}
+              className="text-xs sm:text-sm h-9 sm:h-10"
+            >
+              <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Add Crypto</span>
+              <span className="sm:hidden">Crypto</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push("/tracker")}
+              className="col-span-2 sm:col-span-1 text-xs sm:text-sm h-9 sm:h-10"
+            >
+              <FileText className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">View Full Report</span>
+              <span className="sm:hidden">Full Report</span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
