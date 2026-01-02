@@ -18,8 +18,8 @@ export function RecentTransactions({ losses }: RecentTransactionsProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-          <CardDescription>Your latest deposits and withdrawals</CardDescription>
+          <CardTitle>Transaksi Terbaru</CardTitle>
+          <CardDescription>Deposit dan penarikan terbaru kamu</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground py-8">
@@ -33,8 +33,8 @@ export function RecentTransactions({ losses }: RecentTransactionsProps) {
   return (
     <Card>
       <CardHeader className="p-3 sm:p-4 md:p-6">
-        <CardTitle className="text-base sm:text-lg md:text-xl">Recent Transactions</CardTitle>
-        <CardDescription className="text-xs sm:text-sm">Your latest deposits and withdrawals</CardDescription>
+        <CardTitle className="text-base sm:text-lg md:text-xl">Transaksi Terbaru</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Deposit dan penarikan terbaru kamu</CardDescription>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
         <div className="space-y-2 sm:space-y-3">

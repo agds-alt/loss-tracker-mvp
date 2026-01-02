@@ -123,7 +123,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
       if (error) throw error
 
       toast({
-        title: "Updated!",
+        title: "Berhasil Diperbarui!",
         description: "Entry berhasil diupdate.",
       })
 
@@ -160,7 +160,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
       if (error) throw error
 
       toast({
-        title: "Deleted!",
+        title: "Berhasil Dihapus!",
         description: "Entry berhasil dihapus.",
       })
 
@@ -182,7 +182,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
     <>
       <Card>
         <CardHeader className="p-3 sm:p-4 md:p-6">
-          <CardTitle className="text-base sm:text-lg md:text-xl">Entry History</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">Riwayat Entry</CardTitle>
           <CardDescription className="text-xs sm:text-sm">
             Semua catatan loss kamu dalam satu tempat
           </CardDescription>
@@ -192,7 +192,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
             <div className="flex-1">
               <Input
-                placeholder="Search by site/coin..."
+                placeholder="Cari berdasarkan situs/coin..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value)
@@ -210,7 +210,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                 }}
                 className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
               >
-                All
+                Semua
               </Button>
               <Button
                 variant={filter === "judol" ? "judol" : "outline"}
@@ -240,13 +240,13 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
             <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Date</th>
-                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Type</th>
-                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Site/Coin</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Tanggal</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Tipe</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Situs/Coin</th>
                   <th className="text-center py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Deposit/WD</th>
-                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Amount</th>
-                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Notes</th>
-                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Action</th>
+                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Jumlah</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Catatan</th>
+                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -336,7 +336,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages}
+                Halaman {currentPage} dari {totalPages}
               </p>
               <div className="flex gap-2">
                 <Button
@@ -346,7 +346,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Previous
+                  Sebelumnya
                 </Button>
                 <Button
                   variant="outline"
@@ -354,7 +354,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  Selanjutnya
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -364,15 +364,15 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           {/* Summary Stats */}
           <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-muted-foreground">Total Entries</p>
+              <p className="text-sm text-muted-foreground">Total Entry</p>
               <p className="text-2xl font-bold">{formatNumber(totalEntries)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Average Loss</p>
+              <p className="text-sm text-muted-foreground">Rata-rata Loss</p>
               <p className="text-2xl font-bold">{formatCurrency(avgLoss)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Biggest Loss</p>
+              <p className="text-sm text-muted-foreground">Loss Terbesar</p>
               <p className="text-2xl font-bold">
                 {formatCurrency(Number(biggestLoss?.amount || 0))}
               </p>
@@ -391,11 +391,11 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Entry</DialogTitle>
-            <DialogDescription>Update informasi loss kamu</DialogDescription>
+            <DialogDescription>Perbarui informasi loss kamu</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Type</Label>
+              <Label>Tipe</Label>
               <RadioGroup
                 value={editForm.type}
                 onValueChange={(value: "judol" | "crypto") =>
@@ -420,7 +420,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
 
             {/* Win/Loss Selection */}
             <div className="space-y-2">
-              <Label>Transaction Type</Label>
+              <Label>Tipe Transaksi</Label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -450,12 +450,12 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                     <ArrowUp className="h-5 w-5 text-clean" />
                     <span className="font-semibold">WIN</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+                  <p className="text-xs text-muted-foreground">Withdraw / Untung</p>
                 </button>
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-site">Site/Coin Name</Label>
+              <Label htmlFor="edit-site">Nama Situs/Coin</Label>
               <Input
                 id="edit-site"
                 value={editForm.site_coin_name}
@@ -465,7 +465,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-amount">Amount (Rp)</Label>
+              <Label htmlFor="edit-amount">Jumlah (Rp)</Label>
               <Input
                 id="edit-amount"
                 type="number"
@@ -474,7 +474,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-date">Date</Label>
+              <Label htmlFor="edit-date">Tanggal</Label>
               <Input
                 id="edit-date"
                 type="date"
@@ -483,7 +483,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-notes">Notes</Label>
+              <Label htmlFor="edit-notes">Catatan</Label>
               <Textarea
                 id="edit-notes"
                 value={editForm.notes}
@@ -493,10 +493,10 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditModalOpen(false)}>
-              Cancel
+              Batal
             </Button>
             <Button onClick={handleUpdateLoss} disabled={loading}>
-              {loading ? "Updating..." : "Update"}
+              {loading ? "Memperbarui..." : "Perbarui"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -506,7 +506,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Entry?</DialogTitle>
+            <DialogTitle>Hapus Entry?</DialogTitle>
             <DialogDescription>
               Yakin mau hapus entry ini? Action ini tidak bisa di-undo.
             </DialogDescription>
@@ -524,10 +524,10 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
-              Cancel
+              Batal
             </Button>
             <Button variant="destructive" onClick={confirmDelete} disabled={loading}>
-              {loading ? "Deleting..." : "Delete"}
+              {loading ? "Menghapus..." : "Hapus"}
             </Button>
           </DialogFooter>
         </DialogContent>

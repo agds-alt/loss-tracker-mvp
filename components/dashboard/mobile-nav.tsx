@@ -26,8 +26,8 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "My Tracker", href: "/tracker", icon: TrendingDown },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy, disabled: true },
-  { name: "Community", href: "/community", icon: Users, disabled: true },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Komunitas", href: "/community", icon: Users, disabled: true },
+  { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
 
 export function MobileNav({ user }: MobileNavProps) {
@@ -69,7 +69,7 @@ export function MobileNav({ user }: MobileNavProps) {
               <SheetHeader className="p-4 border-b">
                 <SheetTitle className="text-left">
                   <h2 className="text-xl font-bold text-primary">Loss Tracker</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">Financial Freedom Journey</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Perjalanan Kebebasan Finansial</p>
                 </SheetTitle>
               </SheetHeader>
 
@@ -83,7 +83,7 @@ export function MobileNav({ user }: MobileNavProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{user.username}</p>
-                    <p className="text-xs text-muted-foreground">Member since {memberSince}</p>
+                    <p className="text-xs text-muted-foreground">Bergabung sejak {memberSince}</p>
                   </div>
                 </div>
               </div>
@@ -111,7 +111,7 @@ export function MobileNav({ user }: MobileNavProps) {
                         if (isDisabled) {
                           e.preventDefault()
                           toast({
-                            title: "Coming Soon",
+                            title: "Segera Hadir",
                             description: "Fitur ini akan segera hadir!",
                           })
                         } else {

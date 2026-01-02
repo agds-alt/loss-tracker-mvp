@@ -65,8 +65,8 @@ export function PnLCard({ losses, username }: PnLCardProps) {
 
     try {
       toast({
-        title: "Generating image...",
-        description: "Please wait a moment.",
+        title: "Membuat gambar...",
+        description: "Mohon tunggu sebentar.",
       })
 
       const canvas = await html2canvas(cardRef.current, {
@@ -83,14 +83,14 @@ export function PnLCard({ losses, username }: PnLCardProps) {
       link.click()
 
       toast({
-        title: "Success!",
-        description: "PnL card downloaded successfully.",
+        title: "Berhasil!",
+        description: "PnL card berhasil diunduh.",
       })
     } catch {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to download PnL card.",
+        description: "Gagal mengunduh PnL card.",
       })
     }
   }
@@ -114,7 +114,7 @@ export function PnLCard({ losses, username }: PnLCardProps) {
           {/* Header */}
           <div className="flex items-center justify-between mb-6 sm:mb-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold">PnL Report</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">Laporan PnL</h2>
               <p className="text-white/80 text-sm sm:text-base mt-1">@{username}</p>
             </div>
             <div className="text-right">
@@ -132,8 +132,8 @@ export function PnLCard({ losses, username }: PnLCardProps) {
                 <Target className="h-8 w-8 sm:h-10 sm:w-10" />
               )}
               <div>
-                <p className="text-white/90 text-sm sm:text-base">Net Profit & Loss</p>
-                <p className="text-xs sm:text-sm text-white/70">All Time</p>
+                <p className="text-white/90 text-sm sm:text-base">Untung & Rugi Bersih</p>
+                <p className="text-xs sm:text-sm text-white/70">Sepanjang Waktu</p>
               </div>
             </div>
             <div className="flex items-baseline gap-2">
@@ -149,7 +149,7 @@ export function PnLCard({ losses, username }: PnLCardProps) {
                 <TrendingDown className="h-5 w-5 text-red-300" />
               )}
               <span className="text-sm sm:text-base font-semibold">
-                {isProfitable ? "Profit" : "Loss"}
+                {isProfitable ? "Untung" : "Rugi"}
               </span>
             </div>
           </div>
@@ -158,38 +158,38 @@ export function PnLCard({ losses, username }: PnLCardProps) {
           <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
             {/* Total Deposits */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
-              <p className="text-white/80 text-xs sm:text-sm mb-2">Total Deposits</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-2">Total Deposit</p>
               <p className="text-xl sm:text-2xl font-bold">{formatCurrency(totalDeposits)}</p>
-              <p className="text-xs text-white/60 mt-1">{totalDepositsCount}x Deposits</p>
+              <p className="text-xs text-white/60 mt-1">{totalDepositsCount}x Deposit</p>
             </div>
 
             {/* Total Withdrawals */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
-              <p className="text-white/80 text-xs sm:text-sm mb-2">Total Withdrawals</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-2">Total Penarikan</p>
               <p className="text-xl sm:text-2xl font-bold">{formatCurrency(totalWithdrawals)}</p>
-              <p className="text-xs text-white/60 mt-1">{totalWins}x Withdrawals</p>
+              <p className="text-xs text-white/60 mt-1">{totalWins}x Penarikan</p>
             </div>
 
             {/* Win Rate */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
-              <p className="text-white/80 text-xs sm:text-sm mb-2">Win Rate</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-2">Rasio Menang</p>
               <p className="text-xl sm:text-2xl font-bold">{winRate.toFixed(1)}%</p>
               <p className="text-xs text-white/60 mt-1">
-                {totalWins}/{totalTransactions} Wins
+                {totalWins}/{totalTransactions} Menang
               </p>
             </div>
 
             {/* Total Sites */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
-              <p className="text-white/80 text-xs sm:text-sm mb-2">Sites/Coins</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-2">Situs/Coin</p>
               <p className="text-xl sm:text-2xl font-bold">{uniqueSites}</p>
-              <p className="text-xs text-white/60 mt-1">Unique Platforms</p>
+              <p className="text-xs text-white/60 mt-1">Platform Unik</p>
             </div>
           </div>
 
           {/* Breakdown by Type */}
           <div className="space-y-3 sm:space-y-4">
-            <h4 className="text-lg sm:text-xl font-semibold">Breakdown</h4>
+            <h4 className="text-lg sm:text-xl font-semibold">Rincian</h4>
 
             {/* Judol */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
@@ -209,11 +209,11 @@ export function PnLCard({ losses, username }: PnLCardProps) {
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
                 <div>
-                  <p className="text-white/70">Deposits</p>
+                  <p className="text-white/70">Deposit</p>
                   <p className="font-semibold">{formatCurrency(judolDeposits)}</p>
                 </div>
                 <div>
-                  <p className="text-white/70">Withdrawals</p>
+                  <p className="text-white/70">Penarikan</p>
                   <p className="font-semibold">{formatCurrency(judolWithdrawals)}</p>
                 </div>
               </div>
@@ -237,11 +237,11 @@ export function PnLCard({ losses, username }: PnLCardProps) {
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
                 <div>
-                  <p className="text-white/70">Deposits</p>
+                  <p className="text-white/70">Deposit</p>
                   <p className="font-semibold">{formatCurrency(cryptoDeposits)}</p>
                 </div>
                 <div>
-                  <p className="text-white/70">Withdrawals</p>
+                  <p className="text-white/70">Penarikan</p>
                   <p className="font-semibold">{formatCurrency(cryptoWithdrawals)}</p>
                 </div>
               </div>
@@ -251,9 +251,9 @@ export function PnLCard({ losses, username }: PnLCardProps) {
           {/* Footer */}
           <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/20 text-center">
             <p className="text-xs sm:text-sm text-white/80">
-              Track your journey to financial freedom 🚀
+              Lacak perjalananmu menuju kebebasan finansial 🚀
             </p>
-            <p className="text-xs text-white/60 mt-1">Generated by Loss Tracker MVP</p>
+            <p className="text-xs text-white/60 mt-1">Dibuat oleh Loss Tracker MVP</p>
           </div>
         </CardContent>
       </div>
@@ -265,7 +265,7 @@ export function PnLCard({ losses, username }: PnLCardProps) {
         size="lg"
       >
         <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-        Download PnL Card as Image
+        Download PnL Card sebagai Gambar
       </Button>
     </div>
   )
