@@ -134,84 +134,84 @@ export function InputForm() {
   }
 
   return (
-    <Card className="sticky top-6 z-10 shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+    <Card className="shadow-md">
+      <CardHeader className="p-3 sm:p-4 md:p-6">
+        <CardTitle className="flex items-center justify-between text-base sm:text-lg md:text-xl">
           Add New Entry
           {!isOnline && (
-            <span className="text-xs font-normal text-muted-foreground flex items-center gap-1">
-              <WifiOff className="h-3 w-3" /> Offline Mode
+            <span className="text-[10px] sm:text-xs font-normal text-muted-foreground flex items-center gap-1">
+              <WifiOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Offline
             </span>
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label>Type</Label>
+      <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="text-xs sm:text-sm">Type</Label>
             <RadioGroup
               value={formData.type}
               onValueChange={(value: "judol" | "crypto") =>
                 setFormData({ ...formData, type: value })
               }
-              className="flex gap-4"
+              className="flex gap-3 sm:gap-4"
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <RadioGroupItem value="judol" id="judol" />
-                <Label htmlFor="judol" className="cursor-pointer font-normal">
+                <Label htmlFor="judol" className="cursor-pointer font-normal text-xs sm:text-sm">
                   Judol
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <RadioGroupItem value="crypto" id="crypto" />
-                <Label htmlFor="crypto" className="cursor-pointer font-normal">
+                <Label htmlFor="crypto" className="cursor-pointer font-normal text-xs sm:text-sm">
                   Crypto
                 </Label>
               </div>
             </RadioGroup>
           </div>
 
-          <div className="space-y-2">
-            <Label>WIN / LOSS</Label>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="text-xs sm:text-sm">WIN / LOSS</Label>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: false })}
                 className={cn(
-                  "p-4 rounded-lg border-2 transition-all",
+                  "p-2.5 sm:p-4 rounded-lg border-2 transition-all",
                   !formData.is_win
                     ? "border-destructive bg-destructive/10"
                     : "border-border hover:border-destructive/50"
                 )}
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <ArrowDown className="h-5 w-5 text-destructive" />
-                  <span className="font-semibold">LOSS</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                  <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                  <span className="font-semibold text-xs sm:text-sm">LOSS</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Deposit / Modal</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Deposit</p>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: true })}
                 className={cn(
-                  "p-4 rounded-lg border-2 transition-all",
+                  "p-2.5 sm:p-4 rounded-lg border-2 transition-all",
                   formData.is_win
                     ? "border-clean bg-clean/10"
                     : "border-border hover:border-clean/50"
                 )}
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <ArrowUp className="h-5 w-5 text-clean" />
-                  <span className="font-semibold">WIN</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                  <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-clean" />
+                  <span className="font-semibold text-xs sm:text-sm">WIN</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Withdraw</p>
               </button>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="site_coin_name">
+          <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="site_coin_name" className="text-xs sm:text-sm">
                 {formData.type === "judol" ? "Site Name" : "Coin Name"}
               </Label>
               <Input
@@ -226,14 +226,15 @@ export function InputForm() {
                   setFormData({ ...formData, site_coin_name: e.target.value })
                 }
                 disabled={loading}
+                className="h-9 sm:h-10 text-sm"
               />
               {errors.site_coin_name && (
-                <p className="text-sm text-destructive">{errors.site_coin_name}</p>
+                <p className="text-xs sm:text-sm text-destructive">{errors.site_coin_name}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="amount">Amount (Rp)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -243,15 +244,16 @@ export function InputForm() {
                   setFormData({ ...formData, amount: e.target.value })
                 }
                 disabled={loading}
+                className="h-9 sm:h-10 text-sm"
               />
               {errors.amount && (
-                <p className="text-sm text-destructive">{errors.amount}</p>
+                <p className="text-xs sm:text-sm text-destructive">{errors.amount}</p>
               )}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="date" className="text-xs sm:text-sm">Date</Label>
             <Input
               id="date"
               type="date"
@@ -259,27 +261,29 @@ export function InputForm() {
               max={new Date().toISOString().split("T")[0]}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               disabled={loading}
+              className="h-9 sm:h-10 text-sm"
             />
             {errors.date && (
-              <p className="text-sm text-destructive">{errors.date}</p>
+              <p className="text-xs sm:text-sm text-destructive">{errors.date}</p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes (Optional)</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
             <Textarea
               id="notes"
               placeholder="Catatan tambahan..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               disabled={loading}
-              rows={3}
+              rows={2}
+              className="text-sm resize-none"
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full h-9 sm:h-10 text-xs sm:text-sm"
             disabled={loading}
             variant={formData.is_win ? "clean" : (formData.type === "judol" ? "judol" : "crypto")}
           >

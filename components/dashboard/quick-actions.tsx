@@ -171,57 +171,58 @@ export function QuickActions() {
               Catat loss judol kamu untuk tracking yang lebih baik.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 sm:space-y-4 py-2 sm:py-4">
             {/* Win/Loss Selection */}
-            <div className="space-y-2">
-              <Label>Transaction Type</Label>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">Transaction Type</Label>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setJudolForm({ ...judolForm, is_win: false })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
                     !judolForm.is_win
                       ? "border-destructive bg-destructive/10"
                       : "border-border hover:border-destructive/50"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <ArrowDown className="h-5 w-5 text-destructive" />
-                    <span className="font-semibold">LOSS</span>
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                    <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                    <span className="font-semibold text-xs sm:text-sm">LOSS</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Deposit / Modal</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Deposit</p>
                 </button>
                 <button
                   type="button"
                   onClick={() => setJudolForm({ ...judolForm, is_win: true })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
                     judolForm.is_win
                       ? "border-clean bg-clean/10"
                       : "border-border hover:border-clean/50"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <ArrowUp className="h-5 w-5 text-clean" />
-                    <span className="font-semibold">WIN</span>
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                    <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-clean" />
+                    <span className="font-semibold text-xs sm:text-sm">WIN</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Withdraw</p>
                 </button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="judol-site">Site Name</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="judol-site" className="text-xs sm:text-sm">Site Name</Label>
               <Input
                 id="judol-site"
-                placeholder="e.g., Slot88, Pragmatic Play"
+                placeholder="e.g., Slot88"
                 value={judolForm.site_coin_name}
                 onChange={(e) =>
                   setJudolForm({ ...judolForm, site_coin_name: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="judol-amount">Amount (Rp)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="judol-amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
               <Input
                 id="judol-amount"
                 type="number"
@@ -230,10 +231,11 @@ export function QuickActions() {
                 onChange={(e) =>
                   setJudolForm({ ...judolForm, amount: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="judol-date">Date</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="judol-date" className="text-xs sm:text-sm">Date</Label>
               <Input
                 id="judol-date"
                 type="date"
@@ -241,10 +243,11 @@ export function QuickActions() {
                 onChange={(e) =>
                   setJudolForm({ ...judolForm, date: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="judol-notes">Notes (Optional)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="judol-notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
               <Textarea
                 id="judol-notes"
                 placeholder="Catatan tambahan..."
@@ -252,14 +255,17 @@ export function QuickActions() {
                 onChange={(e) =>
                   setJudolForm({ ...judolForm, notes: e.target.value })
                 }
+                rows={2}
+                className="text-sm resize-none"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setJudolModalOpen(false)}
               disabled={loading}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
             >
               Cancel
             </Button>
@@ -267,6 +273,7 @@ export function QuickActions() {
               variant={judolForm.is_win ? "clean" : "judol"}
               onClick={() => handleAddLoss("judol")}
               disabled={loading}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
             >
               {loading ? "Adding..." : (judolForm.is_win ? "Add Win 📈" : "Add Loss 📉")}
             </Button>
@@ -283,57 +290,58 @@ export function QuickActions() {
               Catat loss crypto kamu untuk tracking yang lebih baik.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 sm:space-y-4 py-2 sm:py-4">
             {/* Win/Loss Selection */}
-            <div className="space-y-2">
-              <Label>Transaction Type</Label>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">Transaction Type</Label>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setCryptoForm({ ...cryptoForm, is_win: false })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
                     !cryptoForm.is_win
                       ? "border-destructive bg-destructive/10"
                       : "border-border hover:border-destructive/50"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <ArrowDown className="h-5 w-5 text-destructive" />
-                    <span className="font-semibold">LOSS</span>
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                    <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                    <span className="font-semibold text-xs sm:text-sm">LOSS</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Deposit / Modal</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Deposit</p>
                 </button>
                 <button
                   type="button"
                   onClick={() => setCryptoForm({ ...cryptoForm, is_win: true })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
                     cryptoForm.is_win
                       ? "border-clean bg-clean/10"
                       : "border-border hover:border-clean/50"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <ArrowUp className="h-5 w-5 text-clean" />
-                    <span className="font-semibold">WIN</span>
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+                    <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-clean" />
+                    <span className="font-semibold text-xs sm:text-sm">WIN</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Withdraw</p>
                 </button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="crypto-coin">Coin Name</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="crypto-coin" className="text-xs sm:text-sm">Coin Name</Label>
               <Input
                 id="crypto-coin"
-                placeholder="e.g., BTC, ETH, SOL"
+                placeholder="e.g., BTC, ETH"
                 value={cryptoForm.site_coin_name}
                 onChange={(e) =>
                   setCryptoForm({ ...cryptoForm, site_coin_name: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="crypto-amount">Amount (Rp)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="crypto-amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
               <Input
                 id="crypto-amount"
                 type="number"
@@ -342,10 +350,11 @@ export function QuickActions() {
                 onChange={(e) =>
                   setCryptoForm({ ...cryptoForm, amount: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="crypto-date">Date</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="crypto-date" className="text-xs sm:text-sm">Date</Label>
               <Input
                 id="crypto-date"
                 type="date"
@@ -353,10 +362,11 @@ export function QuickActions() {
                 onChange={(e) =>
                   setCryptoForm({ ...cryptoForm, date: e.target.value })
                 }
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="crypto-notes">Notes (Optional)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="crypto-notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
               <Textarea
                 id="crypto-notes"
                 placeholder="Catatan tambahan..."
@@ -364,14 +374,17 @@ export function QuickActions() {
                 onChange={(e) =>
                   setCryptoForm({ ...cryptoForm, notes: e.target.value })
                 }
+                rows={2}
+                className="text-sm resize-none"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setCryptoModalOpen(false)}
               disabled={loading}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
             >
               Cancel
             </Button>
@@ -379,6 +392,7 @@ export function QuickActions() {
               variant={cryptoForm.is_win ? "clean" : "crypto"}
               onClick={() => handleAddLoss("crypto")}
               disabled={loading}
+              className="h-9 sm:h-10 text-xs sm:text-sm"
             >
               {loading ? "Adding..." : (cryptoForm.is_win ? "Add Win 📈" : "Add Loss 📉")}
             </Button>

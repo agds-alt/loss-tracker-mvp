@@ -56,8 +56,6 @@ export function MobileNav({ user }: MobileNavProps) {
   return (
     <header className="md:hidden sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4">
-        <h1 className="text-lg font-bold text-primary">Loss Tracker</h1>
-
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -142,6 +140,8 @@ export function MobileNav({ user }: MobileNavProps) {
             </div>
           </SheetContent>
         </Sheet>
+
+        <h1 className="text-lg font-bold text-primary">Loss Tracker</h1>
       </div>
     </header>
   )
