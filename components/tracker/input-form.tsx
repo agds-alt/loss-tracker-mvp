@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +11,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { createClient } from "@/lib/supabase/client"
+import { saveLossOffline } from "@/lib/db/offline-storage"
+import { getBackgroundSyncService } from "@/lib/sync/background-sync"
+import { useOnlineStatus } from "@/hooks/use-online-status"
+import { ArrowDown, ArrowUp, WifiOff } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 const lossSchema = z.object({
   type: z.enum(["judol", "crypto"]),
@@ -18,20 +23,31 @@ const lossSchema = z.object({
   amount: z.number().positive("Amount harus lebih dari 0"),
   date: z.string().min(1, "Tanggal harus diisi"),
   notes: z.string().optional(),
+  is_win: z.boolean(),
 })
 
 export function InputForm() {
   const router = useRouter()
   const { toast } = useToast()
+  const { isOnline } = useOnlineStatus()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     type: "judol" as "judol" | "crypto",
+    is_win: false,
     site_coin_name: "",
     amount: "",
     date: new Date().toISOString().split("T")[0],
     notes: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Auto-sync when coming back online
+  useEffect(() => {
+    if (isOnline) {
+      const syncService = getBackgroundSyncService()
+      syncService.syncNow()
+    }
+  }, [isOnline])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,21 +67,43 @@ export function InputForm() {
 
       if (!user) throw new Error("Not authenticated")
 
-      const { error } = await supabase.from("losses").insert({
-        user_id: user.id,
-        ...validated,
-      })
+      // If offline, save to IndexedDB
+      if (!isOnline) {
+        await saveLossOffline({
+          id: "", // Will be generated
+          user_id: user.id,
+          type: validated.type,
+          site_coin_name: validated.site_coin_name,
+          amount: validated.amount,
+          date: validated.date,
+          notes: validated.notes || null,
+          is_win: validated.is_win,
+          created_at: new Date().toISOString(),
+        })
 
-      if (error) throw error
+        toast({
+          title: "Saved Offline!",
+          description: "Entry disimpan offline. Akan di-sync saat online.",
+        })
+      } else {
+        // If online, save directly to Supabase
+        const { error } = await supabase.from("losses").insert({
+          user_id: user.id,
+          ...validated,
+        })
 
-      toast({
-        title: "Loss Added!",
-        description: "Entry berhasil ditambahkan ke tracker.",
-      })
+        if (error) throw error
+
+        toast({
+          title: validated.is_win ? "Win Added!" : "Loss Added!",
+          description: "Entry berhasil ditambahkan ke tracker.",
+        })
+      }
 
       // Reset form
       setFormData({
         type: "judol",
+        is_win: false,
         site_coin_name: "",
         amount: "",
         date: new Date().toISOString().split("T")[0],
@@ -86,7 +124,7 @@ export function InputForm() {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Gagal menambahkan loss. Coba lagi.",
+          description: "Gagal menambahkan entry. Coba lagi.",
         })
       }
     } finally {
@@ -97,7 +135,14 @@ export function InputForm() {
   return (
     <Card className="sticky top-6 z-10 shadow-lg">
       <CardHeader>
-        <CardTitle>Add New Entry</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          Add New Entry
+          {!isOnline && (
+            <span className="text-xs font-normal text-muted-foreground flex items-center gap-1">
+              <WifiOff className="h-3 w-3" /> Offline Mode
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -123,6 +168,44 @@ export function InputForm() {
                 </Label>
               </div>
             </RadioGroup>
+          </div>
+
+          <div className="space-y-2">
+            <Label>WIN / LOSS</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, is_win: false })}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all",
+                  !formData.is_win
+                    ? "border-destructive bg-destructive/10"
+                    : "border-border hover:border-destructive/50"
+                )}
+              >
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <ArrowDown className="h-5 w-5 text-destructive" />
+                  <span className="font-semibold">LOSS</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Deposit / Modal</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, is_win: true })}
+                className={cn(
+                  "p-4 rounded-lg border-2 transition-all",
+                  formData.is_win
+                    ? "border-clean bg-clean/10"
+                    : "border-border hover:border-clean/50"
+                )}
+              >
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <ArrowUp className="h-5 w-5 text-clean" />
+                  <span className="font-semibold">WIN</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+              </button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
@@ -197,9 +280,12 @@ export function InputForm() {
             type="submit"
             className="w-full"
             disabled={loading}
-            variant={formData.type === "judol" ? "judol" : "crypto"}
+            variant={formData.is_win ? "clean" : (formData.type === "judol" ? "judol" : "crypto")}
           >
-            {loading ? "Adding..." : "Add Entry"}
+            {loading
+              ? (isOnline ? "Adding..." : "Saving Offline...")
+              : (formData.is_win ? "Add Win 📈" : "Add Loss 📉")
+            }
           </Button>
         </form>
       </CardContent>

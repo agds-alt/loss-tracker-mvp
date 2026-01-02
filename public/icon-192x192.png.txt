@@ -1,0 +1,16 @@
+This is a placeholder. To generate actual PWA icons:
+
+1. Create a 512x512 PNG logo with:
+   - Red/orange color scheme (matching judol/crypto theme)
+   - Simple icon (maybe a chart or warning symbol)
+   - Transparent background
+
+2. Use a tool like https://realfavicongenerator.net/ or ImageMagick to generate:
+   - icon-192x192.png
+   - icon-512x512.png
+
+For now, you can use any 192x192 and 512x512 PNG images.
+
+Quick command with ImageMagick (if you have a logo.png):
+convert logo.png -resize 192x192 icon-192x192.png
+convert logo.png -resize 512x512 icon-512x512.png

@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { createClient } from "@/lib/supabase/client"
+import { insertLoss } from "@/lib/db/helpers"
 import { PlusCircle, FileText, ArrowUp, ArrowDown } from "lucide-react"
 
 const lossSchema = z.object({
@@ -68,7 +69,7 @@ export function QuickActions() {
 
       if (!user) throw new Error("Not authenticated")
 
-      const { error } = await supabase.from("losses").insert({
+      const { error } = await insertLoss(supabase, {
         user_id: user.id,
         type,
         ...validated,

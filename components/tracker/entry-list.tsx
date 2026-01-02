@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { createClient } from "@/lib/supabase/client"
+import { updateLoss } from "@/lib/db/helpers"
 import { formatCurrency, formatNumber, cn } from "@/lib/utils"
 import { Database } from "@/types/database.types"
 import { Edit, Trash2, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react"
@@ -117,10 +118,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
       })
 
       const supabase = createClient()
-      const { error } = await supabase
-        .from("losses")
-        .update(validated)
-        .eq("id", selectedLoss.id)
+      const { error } = await updateLoss(supabase, selectedLoss.id, validated)
 
       if (error) throw error
 
@@ -131,6 +129,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
 
       setEditModalOpen(false)
       router.refresh()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast({
         variant: "destructive",
@@ -167,6 +166,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
 
       setDeleteModalOpen(false)
       router.refresh()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast({
         variant: "destructive",

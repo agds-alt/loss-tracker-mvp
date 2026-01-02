@@ -9,12 +9,6 @@ export default async function SettingsPage() {
 
   if (!user) return null
 
-  const { data: profile } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", user.id)
-    .single()
-
   return (
     <div className="space-y-8">
       <div>
@@ -35,13 +29,13 @@ export default async function SettingsPage() {
             <p className="text-lg">{user.email}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Username</p>
-            <p className="text-lg">{profile?.username || "N/A"}</p>
+            <p className="text-sm font-medium text-muted-foreground">User ID</p>
+            <p className="text-lg font-mono text-xs">{user.id}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Member Since</p>
             <p className="text-lg">
-              {new Date(profile?.created_at || new Date()).toLocaleDateString("id-ID", {
+              {new Date(user.created_at || new Date()).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",

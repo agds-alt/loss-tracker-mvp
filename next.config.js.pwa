@@ -60,6 +60,30 @@ const withPWA = require('next-pwa')({
       }
     },
     {
+      urlPattern: /\.(?:mp3|wav|ogg)$/i,
+      handler: 'CacheFirst',
+      options: {
+        rangeRequests: true,
+        cacheName: 'static-audio-assets',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:mp4)$/i,
+      handler: 'CacheFirst',
+      options: {
+        rangeRequests: true,
+        cacheName: 'static-video-assets',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+        }
+      }
+    },
+    {
       urlPattern: /\.(?:js)$/i,
       handler: 'StaleWhileRevalidate',
       options: {
@@ -86,6 +110,17 @@ const withPWA = require('next-pwa')({
       handler: 'StaleWhileRevalidate',
       options: {
         cacheName: 'next-data',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:json|xml|csv)$/i,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'static-data-assets',
         expiration: {
           maxEntries: 32,
           maxAgeSeconds: 24 * 60 * 60 // 24 hours
@@ -130,10 +165,6 @@ const withPWA = require('next-pwa')({
 })
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    domains: ['lh3.googleusercontent.com'], // For Google OAuth avatars
-  },
-}
+const nextConfig = {}
 
 module.exports = withPWA(nextConfig)
