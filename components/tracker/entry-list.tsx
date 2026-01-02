@@ -181,32 +181,34 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>Entry History</CardTitle>
-          <CardDescription>
+        <CardHeader className="p-3 sm:p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">Entry History</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Semua catatan loss kamu dalam satu tempat
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0 space-y-3 sm:space-y-4 md:space-y-6">
           {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
             <div className="flex-1">
               <Input
-                placeholder="Search by site/coin name..."
+                placeholder="Search by site/coin..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value)
                   setCurrentPage(1)
                 }}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
               <Button
                 variant={filter === "all" ? "default" : "outline"}
                 onClick={() => {
                   setFilter("all")
                   setCurrentPage(1)
                 }}
+                className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
               >
                 All
               </Button>
@@ -216,6 +218,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                   setFilter("judol")
                   setCurrentPage(1)
                 }}
+                className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
               >
                 Judol
               </Button>
@@ -225,6 +228,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                   setFilter("crypto")
                   setCurrentPage(1)
                 }}
+                className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
               >
                 Crypto
               </Button>
@@ -232,17 +236,17 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="overflow-x-auto -mx-3 sm:mx-0">
+            <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 px-2">Date</th>
-                  <th className="text-left py-3 px-2">Type</th>
-                  <th className="text-left py-3 px-2">Site/Coin</th>
-                  <th className="text-center py-3 px-2">Deposit/WD</th>
-                  <th className="text-right py-3 px-2">Amount</th>
-                  <th className="text-left py-3 px-2">Notes</th>
-                  <th className="text-right py-3 px-2">Action</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Date</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Type</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Site/Coin</th>
+                  <th className="text-center py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Deposit/WD</th>
+                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Amount</th>
+                  <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Notes</th>
+                  <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm font-medium">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -261,13 +265,13 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                         loss.type === "judol" ? "bg-judol/5" : "bg-crypto/5"
                       )}
                     >
-                      <td className="py-3 px-2 text-sm">
+                      <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm whitespace-nowrap">
                         {format(new Date(loss.date), "dd MMM yyyy")}
                       </td>
-                      <td className="py-3 px-2">
+                      <td className="py-2 sm:py-3 px-1.5 sm:px-2">
                         <span
                           className={cn(
-                            "text-xs font-medium px-2 py-1 rounded-full",
+                            "text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap",
                             loss.type === "judol"
                               ? "bg-judol/20 text-judol"
                               : "bg-crypto/20 text-crypto"
@@ -276,19 +280,19 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                           {loss.type === "judol" ? "Judol" : "Crypto"}
                         </span>
                       </td>
-                      <td className="py-3 px-2 font-medium">{loss.site_coin_name}</td>
-                      <td className="py-3 px-2 text-center">
+                      <td className="py-2 sm:py-3 px-1.5 sm:px-2 font-medium text-xs sm:text-sm">{loss.site_coin_name}</td>
+                      <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-center">
                         {loss.is_win ? (
                           <div className="flex items-center justify-center gap-1">
-                            <ArrowUp className="h-4 w-4 text-clean" />
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-clean/20 text-clean">
+                            <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 text-clean" />
+                            <span className="text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full bg-clean/20 text-clean whitespace-nowrap">
                               WD
                             </span>
                           </div>
                         ) : (
                           <div className="flex items-center justify-center gap-1">
-                            <ArrowDown className="h-4 w-4 text-destructive" />
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-destructive/20 text-destructive">
+                            <ArrowDown className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" />
+                            <span className="text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full bg-destructive/20 text-destructive whitespace-nowrap">
                               Deposit
                             </span>
                           </div>
