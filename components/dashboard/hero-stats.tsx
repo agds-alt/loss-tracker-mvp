@@ -28,7 +28,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
           <div className="flex items-start justify-between mb-2 sm:mb-3 md:mb-4">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">
-                Judol Activity
+                Aktivitas Judol
               </p>
               <h3 className="text-lg sm:text-xl md:text-2xl font-bold mt-0.5 sm:mt-1">🎰</h3>
             </div>
@@ -57,7 +57,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
             <div className="pt-1.5 sm:pt-2 border-t">
               <div className="flex items-center justify-between">
-                <span className="text-xs sm:text-sm font-medium">Net Result:</span>
+                <span className="text-xs sm:text-sm font-medium">Hasil Bersih:</span>
                 <span className={`text-sm sm:text-base md:text-lg font-bold ${
                   netJudol >= 0 ? 'text-clean' : 'text-destructive'
                 }`}>
@@ -75,7 +75,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
           <div className="flex items-start justify-between mb-2 sm:mb-3 md:mb-4">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">
-                Crypto Activity
+                Aktivitas Crypto
               </p>
               <h3 className="text-lg sm:text-xl md:text-2xl font-bold mt-0.5 sm:mt-1">₿</h3>
             </div>
@@ -104,7 +104,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
             <div className="pt-1.5 sm:pt-2 border-t">
               <div className="flex items-center justify-between">
-                <span className="text-xs sm:text-sm font-medium">Net Result:</span>
+                <span className="text-xs sm:text-sm font-medium">Hasil Bersih:</span>
                 <span className={`text-sm sm:text-base md:text-lg font-bold ${
                   netCrypto >= 0 ? 'text-clean' : 'text-destructive'
                 }`}>
@@ -122,13 +122,13 @@ export function HeroStats({ stats }: HeroStatsProps) {
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">
-                Clean Days Streak
+                Hari Bersih Beruntun
               </p>
               <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-clean mt-1 sm:mt-1.5 md:mt-2">
                 {cleanDays}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
-                days without judol
+                hari tanpa judol
               </p>
             </div>
             <div className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 rounded-full bg-clean/10 flex items-center justify-center flex-shrink-0">

@@ -155,7 +155,7 @@ export function InputForm({ losses }: InputFormProps) {
     <Card className="shadow-md">
       <CardHeader className="p-3 sm:p-4 md:p-6">
         <CardTitle className="flex items-center justify-between text-base sm:text-lg md:text-xl">
-          Add New Entry
+          Tambah Entry Baru
           {!isOnline && (
             <span className="text-[10px] sm:text-xs font-normal text-muted-foreground flex items-center gap-1">
               <WifiOff className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Offline
@@ -167,13 +167,13 @@ export function InputForm({ losses }: InputFormProps) {
         {/* Running Totals Display */}
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6 p-3 sm:p-4 bg-muted/50 rounded-lg border">
           <div className="text-center">
-            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total Deposits</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total Deposit</p>
             <p className="text-sm sm:text-base md:text-lg font-bold text-destructive">
               {formatCurrency(totalDeposits)}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total Withdrawals</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total WD</p>
             <p className="text-sm sm:text-base md:text-lg font-bold text-clean">
               {formatCurrency(totalWithdrawals)}
             </p>
@@ -190,7 +190,7 @@ export function InputForm({ losses }: InputFormProps) {
         </div>
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div className="space-y-1.5 sm:space-y-2">
-            <Label className="text-xs sm:text-sm">Type</Label>
+            <Label className="text-xs sm:text-sm">Tipe</Label>
             <RadioGroup
               value={formData.type}
               onValueChange={(value: "judol" | "crypto") =>
@@ -254,7 +254,7 @@ export function InputForm({ losses }: InputFormProps) {
           <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
             <div className="space-y-1.5 sm:space-y-2">
               <Label htmlFor="site_coin_name" className="text-xs sm:text-sm">
-                {formData.type === "judol" ? "Site Name" : "Coin Name"}
+                {formData.type === "judol" ? "Nama Situs" : "Nama Coin"}
               </Label>
               <Input
                 id="site_coin_name"
@@ -276,7 +276,7 @@ export function InputForm({ losses }: InputFormProps) {
             </div>
 
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
+              <Label htmlFor="amount" className="text-xs sm:text-sm">Jumlah (Rp)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -295,7 +295,7 @@ export function InputForm({ losses }: InputFormProps) {
           </div>
 
           <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="date" className="text-xs sm:text-sm">Date</Label>
+            <Label htmlFor="date" className="text-xs sm:text-sm">Tanggal</Label>
             <Input
               id="date"
               type="date"
@@ -311,7 +311,7 @@ export function InputForm({ losses }: InputFormProps) {
           </div>
 
           <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
+            <Label htmlFor="notes" className="text-xs sm:text-sm">Catatan (Opsional)</Label>
             <Textarea
               id="notes"
               placeholder="Catatan tambahan..."
@@ -330,8 +330,8 @@ export function InputForm({ losses }: InputFormProps) {
             variant={formData.is_win ? "clean" : (formData.type === "judol" ? "judol" : "crypto")}
           >
             {loading
-              ? (isOnline ? "Adding..." : "Saving Offline...")
-              : (formData.is_win ? "Add Win 📈" : "Add Loss 📉")
+              ? (isOnline ? "Menambahkan..." : "Menyimpan Offline...")
+              : (formData.is_win ? "Tambah Win 📈" : "Tambah Loss 📉")
             }
           </Button>
         </form>

@@ -127,7 +127,7 @@ export function QuickActions() {
     <>
       <Card>
         <CardHeader className="p-3 sm:p-4 md:p-6">
-          <CardTitle className="text-base sm:text-lg md:text-xl">Quick Actions</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">Aksi Cepat</CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 md:gap-4">
@@ -137,7 +137,7 @@ export function QuickActions() {
               className="text-xs sm:text-sm h-9 sm:h-10"
             >
               <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Add Judol</span>
+              <span className="hidden sm:inline">Tambah Judol</span>
               <span className="sm:hidden">Judol</span>
             </Button>
             <Button
@@ -146,7 +146,7 @@ export function QuickActions() {
               className="text-xs sm:text-sm h-9 sm:h-10"
             >
               <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Add Crypto</span>
+              <span className="hidden sm:inline">Tambah Crypto</span>
               <span className="sm:hidden">Crypto</span>
             </Button>
             <Button
@@ -155,8 +155,8 @@ export function QuickActions() {
               className="col-span-2 sm:col-span-1 text-xs sm:text-sm h-9 sm:h-10"
             >
               <FileText className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">View Full Report</span>
-              <span className="sm:hidden">Full Report</span>
+              <span className="hidden sm:inline">Lihat Laporan Lengkap</span>
+              <span className="sm:hidden">Laporan</span>
             </Button>
           </div>
         </CardContent>
@@ -166,7 +166,7 @@ export function QuickActions() {
       <Dialog open={judolModalOpen} onOpenChange={setJudolModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Judol Loss</DialogTitle>
+            <DialogTitle>Tambah Loss Judol</DialogTitle>
             <DialogDescription>
               Catat loss judol kamu untuk tracking yang lebih baik.
             </DialogDescription>
@@ -174,7 +174,7 @@ export function QuickActions() {
           <div className="space-y-3 sm:space-y-4 py-2 sm:py-4">
             {/* Win/Loss Selection */}
             <div className="space-y-1.5 sm:space-y-2">
-              <Label className="text-xs sm:text-sm">Transaction Type</Label>
+              <Label className="text-xs sm:text-sm">Tipe Transaksi</Label>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button
                   type="button"
@@ -210,7 +210,7 @@ export function QuickActions() {
             </div>
 
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-site" className="text-xs sm:text-sm">Site Name</Label>
+              <Label htmlFor="judol-site" className="text-xs sm:text-sm">Nama Situs</Label>
               <Input
                 id="judol-site"
                 placeholder="e.g., Slot88"
@@ -222,7 +222,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
+              <Label htmlFor="judol-amount" className="text-xs sm:text-sm">Jumlah (Rp)</Label>
               <Input
                 id="judol-amount"
                 type="number"
@@ -235,7 +235,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-date" className="text-xs sm:text-sm">Date</Label>
+              <Label htmlFor="judol-date" className="text-xs sm:text-sm">Tanggal</Label>
               <Input
                 id="judol-date"
                 type="date"
@@ -247,7 +247,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
+              <Label htmlFor="judol-notes" className="text-xs sm:text-sm">Catatan (Opsional)</Label>
               <Textarea
                 id="judol-notes"
                 placeholder="Catatan tambahan..."
@@ -267,7 +267,7 @@ export function QuickActions() {
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               variant={judolForm.is_win ? "clean" : "judol"}
@@ -275,7 +275,7 @@ export function QuickActions() {
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
-              {loading ? "Adding..." : (judolForm.is_win ? "Add Win 📈" : "Add Loss 📉")}
+              {loading ? "Menambahkan..." : (judolForm.is_win ? "Tambah Win 📈" : "Tambah Loss 📉")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -285,7 +285,7 @@ export function QuickActions() {
       <Dialog open={cryptoModalOpen} onOpenChange={setCryptoModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Crypto Loss</DialogTitle>
+            <DialogTitle>Tambah Loss Crypto</DialogTitle>
             <DialogDescription>
               Catat loss crypto kamu untuk tracking yang lebih baik.
             </DialogDescription>
@@ -293,7 +293,7 @@ export function QuickActions() {
           <div className="space-y-3 sm:space-y-4 py-2 sm:py-4">
             {/* Win/Loss Selection */}
             <div className="space-y-1.5 sm:space-y-2">
-              <Label className="text-xs sm:text-sm">Transaction Type</Label>
+              <Label className="text-xs sm:text-sm">Tipe Transaksi</Label>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button
                   type="button"
@@ -329,7 +329,7 @@ export function QuickActions() {
             </div>
 
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="crypto-coin" className="text-xs sm:text-sm">Coin Name</Label>
+              <Label htmlFor="crypto-coin" className="text-xs sm:text-sm">Nama Coin</Label>
               <Input
                 id="crypto-coin"
                 placeholder="e.g., BTC, ETH"
@@ -341,7 +341,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="crypto-amount" className="text-xs sm:text-sm">Amount (Rp)</Label>
+              <Label htmlFor="crypto-amount" className="text-xs sm:text-sm">Jumlah (Rp)</Label>
               <Input
                 id="crypto-amount"
                 type="number"
@@ -354,7 +354,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="crypto-date" className="text-xs sm:text-sm">Date</Label>
+              <Label htmlFor="crypto-date" className="text-xs sm:text-sm">Tanggal</Label>
               <Input
                 id="crypto-date"
                 type="date"
@@ -366,7 +366,7 @@ export function QuickActions() {
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="crypto-notes" className="text-xs sm:text-sm">Notes (Optional)</Label>
+              <Label htmlFor="crypto-notes" className="text-xs sm:text-sm">Catatan (Opsional)</Label>
               <Textarea
                 id="crypto-notes"
                 placeholder="Catatan tambahan..."
@@ -386,7 +386,7 @@ export function QuickActions() {
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               variant={cryptoForm.is_win ? "clean" : "crypto"}
@@ -394,7 +394,7 @@ export function QuickActions() {
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
-              {loading ? "Adding..." : (cryptoForm.is_win ? "Add Win 📈" : "Add Loss 📉")}
+              {loading ? "Menambahkan..." : (cryptoForm.is_win ? "Tambah Win 📈" : "Tambah Loss 📉")}
             </Button>
           </DialogFooter>
         </DialogContent>
