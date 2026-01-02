@@ -34,7 +34,7 @@ export default async function TrackerPage() {
         </p>
       </div>
 
-      <InputForm />
+      <InputForm losses={losses || []} />
 
       <RealityCheck stats={stats} />
 

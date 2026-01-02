@@ -16,7 +16,10 @@ import { saveLossOffline } from "@/lib/db/offline-storage"
 import { getBackgroundSyncService } from "@/lib/sync/background-sync"
 import { useOnlineStatus } from "@/hooks/use-online-status"
 import { ArrowDown, ArrowUp, WifiOff } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
+import { Database } from "@/types/database.types"
+
+type Loss = Database["public"]["Tables"]["losses"]["Row"]
 
 const lossSchema = z.object({
   type: z.enum(["judol", "crypto"]),
@@ -27,7 +30,11 @@ const lossSchema = z.object({
   is_win: z.boolean(),
 })
 
-export function InputForm() {
+interface InputFormProps {
+  losses: Loss[]
+}
+
+export function InputForm({ losses }: InputFormProps) {
   const router = useRouter()
   const { toast } = useToast()
   const { isOnline } = useOnlineStatus()
@@ -41,6 +48,17 @@ export function InputForm() {
     notes: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Calculate totals
+  const totalDeposits = losses
+    .filter((l) => !l.is_win)
+    .reduce((sum, l) => sum + Number(l.amount), 0)
+
+  const totalWithdrawals = losses
+    .filter((l) => l.is_win)
+    .reduce((sum, l) => sum + Number(l.amount), 0)
+
+  const netPnL = totalWithdrawals - totalDeposits
 
   // Auto-sync when coming back online
   useEffect(() => {
@@ -146,6 +164,30 @@ export function InputForm() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
+        {/* Running Totals Display */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6 p-3 sm:p-4 bg-muted/50 rounded-lg border">
+          <div className="text-center">
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total Deposits</p>
+            <p className="text-sm sm:text-base md:text-lg font-bold text-destructive">
+              {formatCurrency(totalDeposits)}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Total Withdrawals</p>
+            <p className="text-sm sm:text-base md:text-lg font-bold text-clean">
+              {formatCurrency(totalWithdrawals)}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Net P&L</p>
+            <p className={cn(
+              "text-sm sm:text-base md:text-lg font-bold",
+              netPnL >= 0 ? "text-clean" : "text-destructive"
+            )}>
+              {netPnL >= 0 ? "+" : ""}{formatCurrency(netPnL)}
+            </p>
+          </div>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div className="space-y-1.5 sm:space-y-2">
             <Label className="text-xs sm:text-sm">Type</Label>
