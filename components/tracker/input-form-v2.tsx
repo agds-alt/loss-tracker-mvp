@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { createClient } from "@/lib/supabase/client"
+import { insertLoss } from "@/lib/db/helpers"
 import { ArrowUp, ArrowDown } from "lucide-react"
 
 const transactionSchema = z.object({
@@ -54,7 +55,7 @@ export function InputForm() {
 
       if (!user) throw new Error("Not authenticated")
 
-      const { error } = await supabase.from("losses").insert({
+      const { error } = await insertLoss(supabase, {
         user_id: user.id,
         ...validated,
       })

@@ -1,6 +1,7 @@
 "use client"
 
 import { createClient } from '@/lib/supabase/client'
+import { insertLoss, updateLoss } from '@/lib/db/helpers'
 import {
   getSyncQueue,
   markAsSynced,
@@ -129,19 +130,15 @@ export class BackgroundSyncService {
     const supabase = createClient()
 
     // Create on server
-    const { data: newLoss, error } = await supabase
-      .from('losses')
-      .insert({
-        user_id: data.user_id,
-        type: data.type,
-        site_coin_name: data.site_coin_name,
-        amount: data.amount,
-        date: data.date,
-        notes: data.notes,
-        is_win: data.is_win,
-      })
-      .select()
-      .single()
+    const { data: newLoss, error } = await insertLoss(supabase, {
+      user_id: data.user_id,
+      type: data.type,
+      site_coin_name: data.site_coin_name,
+      amount: data.amount,
+      date: data.date,
+      notes: data.notes,
+      is_win: data.is_win,
+    }).select().single()
 
     if (error) {
       throw error
@@ -160,30 +157,33 @@ export class BackgroundSyncService {
     const supabase = createClient()
 
     // Update on server
-    const { error } = await supabase
-      .from('losses')
-      .update({
-        type: data.type,
-        site_coin_name: data.site_coin_name,
-        amount: data.amount,
-        date: data.date,
-        notes: data.notes,
-        is_win: data.is_win,
-      })
-      .eq('id', data.id)
+    const { error } = await updateLoss(supabase, data.id || '', {
+      type: data.type,
+      site_coin_name: data.site_coin_name,
+      amount: data.amount,
+      date: data.date,
+      notes: data.notes,
+      is_win: data.is_win,
+    })
 
     if (error) {
       throw error
     }
 
     // Mark as synced
-    await markAsSynced(data.id, data.id)
+    if (data.id) {
+      await markAsSynced(data.id, data.id)
+    }
 
     // Clear from sync queue
     await clearSyncQueueItem(queueId)
   }
 
   private async syncDelete(data: LossData, queueId: string): Promise<void> {
+    if (!data.id) {
+      throw new Error('Cannot delete entry without ID')
+    }
+
     const supabase = createClient()
 
     // Delete from server

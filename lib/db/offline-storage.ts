@@ -15,6 +15,7 @@ interface Loss {
 }
 
 interface LossTrackerDB extends DBSchema {
+  // @ts-expect-error - idb DBSchema strict type checking issue
   losses: {
     key: string
     value: Loss

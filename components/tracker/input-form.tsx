@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { createClient } from "@/lib/supabase/client"
+import { insertLoss } from "@/lib/db/helpers"
 import { saveLossOffline } from "@/lib/db/offline-storage"
 import { getBackgroundSyncService } from "@/lib/sync/background-sync"
 import { useOnlineStatus } from "@/hooks/use-online-status"
@@ -87,7 +88,7 @@ export function InputForm() {
         })
       } else {
         // If online, save directly to Supabase
-        const { error } = await supabase.from("losses").insert({
+        const { error } = await insertLoss(supabase, {
           user_id: user.id,
           ...validated,
         })
