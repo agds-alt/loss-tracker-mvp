@@ -1,62 +1,20 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { formatCurrency } from "@/lib/utils"
-import { Trophy, Medal, Award, TrendingUp } from "lucide-react"
+import { Trophy, Medal, Award, Loader2 } from "lucide-react"
+import { getLeaderboard, LeaderboardUser } from "@/app/actions/leaderboard"
 
-// Mock data
-const mockTurnaroundData = [
-  {
-    rank: 1,
-    username: "comeback_hero",
-    avatar: null,
-    from_loss: -25000000,
-    to_profit: 8000000,
-    months: 6,
-    badge: "comeback_king",
-  },
-  {
-    rank: 2,
-    username: "crypto_phoenix",
-    avatar: null,
-    from_loss: -18000000,
-    to_profit: 5000000,
-    months: 4,
-    badge: "diamond_hands",
-  },
-  {
-    rank: 3,
-    username: "judol_recovery",
-    avatar: null,
-    from_loss: -12000000,
-    to_profit: 3500000,
-    months: 5,
-    badge: "diamond_hands",
-  },
-]
-
-const getBadgeIcon = (badge: string) => {
-  switch (badge) {
-    case "comeback_king":
-      return "🚀"
-    case "diamond_hands":
-      return "💎"
-    default:
-      return ""
+const getBadge = (longestStreak: number) => {
+  if (longestStreak >= 100) {
+    return { icon: "🚀", name: "Comeback King", variant: "default" as const }
   }
-}
-
-const getBadgeName = (badge: string) => {
-  switch (badge) {
-    case "comeback_king":
-      return "Comeback King"
-    case "diamond_hands":
-      return "Diamond Hands"
-    default:
-      return ""
+  if (longestStreak >= 50) {
+    return { icon: "💎", name: "Diamond Hands", variant: "secondary" as const }
   }
+  return null
 }
 
 const getRankIcon = (rank: number) => {
@@ -73,79 +31,160 @@ const getRankIcon = (rank: number) => {
 }
 
 export function TurnaroundLeaderboard() {
+  const [users, setUsers] = useState<LeaderboardUser[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const LIMIT = 10
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setIsLoading(true)
+      try {
+        const result = await getLeaderboard({
+          rankBy: "longest_streak",
+          limit: LIMIT,
+          offset: 0,
+        })
+
+        if (result.success && result.data) {
+          setUsers(result.data)
+          if (result.data.length < LIMIT) {
+            setHasMore(false)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchLeaderboard()
+  }, [])
+
+  const loadMore = async () => {
+    setIsLoadingMore(true)
+    try {
+      const result = await getLeaderboard({
+        rankBy: "longest_streak",
+        limit: LIMIT,
+        offset: users.length,
+      })
+
+      if (result.success && result.data) {
+        setUsers((prev) => [...prev, ...result.data])
+        if (result.data.length < LIMIT) {
+          setHasMore(false)
+        }
+      }
+    } catch (error) {
+      console.error("Error loading more:", error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="p-3 sm:p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">🚀 Best Streak Ever</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Ranking berdasarkan streak terpanjang sepanjang masa
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader className="p-3 sm:p-4 md:p-6">
-        <CardTitle className="text-base sm:text-lg md:text-xl">🚀 Biggest Turnaround</CardTitle>
+        <CardTitle className="text-base sm:text-lg md:text-xl">🚀 Best Streak Ever</CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          User yang berhasil comeback dari loss besar ke profit
+          Ranking berdasarkan streak terpanjang sepanjang masa
         </CardDescription>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
-        <div className="space-y-3 sm:space-y-4">
-          {mockTurnaroundData.map((user) => {
-            const totalGain = user.to_profit - user.from_loss
-            return (
-              <div
-                key={user.rank}
-                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-              >
-                {/* Rank */}
-                <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
-                  {getRankIcon(user.rank)}
-                </div>
+        {users.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">
+            Belum ada data leaderboard
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3 sm:space-y-4">
+              {users.map((user) => {
+                const badge = getBadge(user.longest_streak)
 
-                {/* Avatar */}
-                <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-                  <div className="h-full w-full rounded-full bg-crypto/10 flex items-center justify-center">
-                    <span className="text-sm sm:text-base font-semibold text-crypto">
-                      {user.username[0].toUpperCase()}
-                    </span>
-                  </div>
-                </Avatar>
-
-                {/* User Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
-                    {user.badge && (
-                      <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
-                        {getBadgeIcon(user.badge)} {getBadgeName(user.badge)}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="space-y-0.5 sm:space-y-1">
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <span className="text-destructive font-semibold">
-                        {formatCurrency(Math.abs(user.from_loss))}
-                      </span>
-                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-clean" />
-                      <span className="text-clean font-semibold">
-                        +{formatCurrency(user.to_profit)}
-                      </span>
+                return (
+                  <div
+                    key={user.user_id}
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    {/* Rank */}
+                    <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
+                      {getRankIcon(user.rank)}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Gain: <span className="font-semibold text-clean">+{formatCurrency(totalGain)}</span> dalam {user.months} bulan
-                    </p>
-                  </div>
-                </div>
 
-                {/* View Profile Button */}
-                <button className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm rounded-md bg-crypto/10 hover:bg-crypto/20 text-crypto font-medium transition-colors flex-shrink-0">
-                  <span className="hidden sm:inline">Lihat Profil</span>
-                  <span className="sm:hidden">Profil</span>
+                    {/* Avatar */}
+                    <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
+                      <div className="h-full w-full rounded-full bg-crypto/10 flex items-center justify-center">
+                        <span className="text-sm sm:text-base font-semibold text-crypto">
+                          {user.username[0]?.toUpperCase() || "U"}
+                        </span>
+                      </div>
+                    </Avatar>
+
+                    {/* User Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
+                        {badge && (
+                          <Badge variant={badge.variant} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
+                            {badge.icon} {badge.name}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          🏆 <span className="font-semibold text-clean">{user.longest_streak} hari</span>
+                        </span>
+                        <span>•</span>
+                        <span>Sekarang: {user.current_streak} hari</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Load More */}
+            {hasMore && (
+              <div className="mt-4 sm:mt-6 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={isLoadingMore}
+                  className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors disabled:opacity-50"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 className="inline h-4 w-4 animate-spin mr-2" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Load More Rankings"
+                  )}
                 </button>
               </div>
-            )
-          })}
-        </div>
-
-        {/* Load More */}
-        <div className="mt-4 sm:mt-6 text-center">
-          <button className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors">
-            Load More Rankings
-          </button>
-        </div>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   )

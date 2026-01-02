@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import { Heart, Reply, MoreVertical, Trash2, Flag } from "lucide-react"
+import { Heart, Reply, MoreVertical, Trash2, Flag, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { createComment, getComments, toggleCommentLike, deleteComment } from "@/app/actions/comments"
 
 interface Comment {
   id: string
@@ -34,53 +35,19 @@ interface CommentsSectionProps {
   currentUsername: string
 }
 
-// Mock comments data
-const mockComments: Comment[] = [
-  {
-    id: "c1",
-    user_id: "user5",
-    username: "supporter_123",
-    content: "Mantap bro! Keep it up! Gw juga lagi di hari ke-25, semoga bisa kayak lu 💪",
-    created_at: "2024-01-02T10:45:00Z",
-    likes_count: 5,
-    is_liked: true,
-    parent_comment_id: null,
-    replies: [
-      {
-        id: "c1-r1",
-        user_id: "user1",
-        username: "progress_champ",
-        content: "Thanks bro! Lu pasti bisa, yang penting konsisten!",
-        created_at: "2024-01-02T11:00:00Z",
-        likes_count: 2,
-        is_liked: false,
-        parent_comment_id: "c1",
-      },
-    ],
-  },
-  {
-    id: "c2",
-    user_id: "user6",
-    username: "motivator_daily",
-    content: "Inspiring banget! Bukti nyata kalo recovery itu possible. Thanks for sharing!",
-    created_at: "2024-01-02T11:30:00Z",
-    likes_count: 8,
-    is_liked: false,
-    parent_comment_id: null,
-  },
-]
-
 function CommentItem({
   comment,
   currentUserId,
   currentUsername,
   onReply,
+  onDelete,
   isReply = false,
 }: {
   comment: Comment
   currentUserId: string
   currentUsername: string
   onReply: (commentId: string, username: string) => void
+  onDelete: (commentId: string) => void
   isReply?: boolean
 }) {
   const [isLiked, setIsLiked] = useState(comment.is_liked)
@@ -93,7 +60,11 @@ function CommentItem({
     locale: id,
   })
 
-  const handleLike = () => {
+  const handleLike = async () => {
+    // Optimistic update
+    const previousLiked = isLiked
+    const previousCount = likesCount
+
     if (isLiked) {
       setIsLiked(false)
       setLikesCount(likesCount - 1)
@@ -101,14 +72,55 @@ function CommentItem({
       setIsLiked(true)
       setLikesCount(likesCount + 1)
     }
-    // TODO: Send API request
+
+    try {
+      const result = await toggleCommentLike(comment.id)
+      if (!result.success) {
+        // Revert on error
+        setIsLiked(previousLiked)
+        setLikesCount(previousCount)
+        toast({
+          title: "Gagal update like",
+          description: result.error,
+          variant: "destructive",
+        })
+      }
+    } catch {
+      // Revert on error
+      setIsLiked(previousLiked)
+      setLikesCount(previousCount)
+      toast({
+        title: "Gagal update like",
+        description: "Silakan coba lagi",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleDelete = () => {
-    toast({
-      title: "Komentar akan dihapus",
-      description: "Fitur ini akan segera hadir!",
-    })
+  const handleDelete = async () => {
+    if (!confirm("Yakin mau hapus komentar ini?")) return
+
+    try {
+      const result = await deleteComment(comment.id)
+      if (result.success) {
+        toast({
+          title: "Komentar berhasil dihapus",
+        })
+        onDelete(comment.id)
+      } else {
+        toast({
+          title: "Gagal hapus komentar",
+          description: result.error,
+          variant: "destructive",
+        })
+      }
+    } catch {
+      toast({
+        title: "Gagal hapus komentar",
+        description: "Silakan coba lagi",
+        variant: "destructive",
+      })
+    }
   }
 
   const handleReport = () => {
@@ -190,6 +202,7 @@ function CommentItem({
                 currentUserId={currentUserId}
                 currentUsername={currentUsername}
                 onReply={onReply}
+                onDelete={onDelete}
                 isReply={true}
               />
             ))}
@@ -200,12 +213,33 @@ function CommentItem({
   )
 }
 
-export function CommentsSection({ currentUserId, currentUsername }: CommentsSectionProps) {
-  const [comments] = useState<Comment[]>(mockComments)
+export function CommentsSection({ postId, currentUserId, currentUsername }: CommentsSectionProps) {
+  const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState("")
   const [replyingTo, setReplyingTo] = useState<{ id: string; username: string } | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
+
+  // Fetch comments on mount
+  useEffect(() => {
+    const fetchComments = async () => {
+      setIsLoading(true)
+      try {
+        const result = await getComments(postId)
+        if (result.success && result.data) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setComments(result.data as any[])
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchComments()
+  }, [postId])
 
   const handleSubmit = async () => {
     if (!newComment.trim()) return
@@ -213,16 +247,34 @@ export function CommentsSection({ currentUserId, currentUsername }: CommentsSect
     setIsSubmitting(true)
 
     try {
-      // TODO: Send API request to create comment
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      toast({
-        title: "Komentar berhasil",
-        description: replyingTo ? "Balasan kamu telah ditambahkan" : "Komentar kamu telah ditambahkan",
+      const result = await createComment({
+        post_id: postId,
+        content: newComment.trim(),
+        parent_comment_id: replyingTo?.id || null,
       })
 
-      setNewComment("")
-      setReplyingTo(null)
+      if (result.success) {
+        toast({
+          title: "Komentar berhasil",
+          description: replyingTo ? "Balasan kamu telah ditambahkan" : "Komentar kamu telah ditambahkan",
+        })
+
+        setNewComment("")
+        setReplyingTo(null)
+
+        // Refetch comments
+        const refreshResult = await getComments(postId)
+        if (refreshResult.success && refreshResult.data) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setComments(refreshResult.data as any[])
+        }
+      } else {
+        toast({
+          title: "Gagal menambah komentar",
+          description: result.error,
+          variant: "destructive",
+        })
+      }
     } catch {
       toast({
         title: "Gagal menambah komentar",
@@ -234,11 +286,29 @@ export function CommentsSection({ currentUserId, currentUsername }: CommentsSect
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleCommentDelete = async (_commentId: string) => {
+    // Refetch comments after delete
+    const result = await getComments(postId)
+    if (result.success && result.data) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setComments(result.data as any[])
+    }
+  }
+
   const handleReply = (commentId: string, username: string) => {
     setReplyingTo({ id: commentId, username })
     // Focus on textarea
     const textarea = document.querySelector('textarea[placeholder*="Tambahkan komentar"]') as HTMLTextAreaElement
     textarea?.focus()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
@@ -296,6 +366,7 @@ export function CommentsSection({ currentUserId, currentUsername }: CommentsSect
               currentUserId={currentUserId}
               currentUsername={currentUsername}
               onReply={handleReply}
+              onDelete={handleCommentDelete}
             />
           ))}
         </div>

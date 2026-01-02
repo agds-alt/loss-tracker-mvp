@@ -102,7 +102,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
       amount: loss.amount.toString(),
       date: loss.date,
       notes: loss.notes || "",
-      is_win: loss.is_win,
+      is_win: loss.is_win ?? false,
     })
     setEditModalOpen(true)
   }

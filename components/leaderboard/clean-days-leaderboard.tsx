@@ -1,75 +1,20 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { formatCurrency } from "@/lib/utils"
-import { Trophy, Medal, Award } from "lucide-react"
+import { Trophy, Medal, Award, Loader2 } from "lucide-react"
+import { getLeaderboard, LeaderboardUser } from "@/app/actions/leaderboard"
 
-// Mock data - akan diganti dengan real data setelah migration
-const mockLeaderboardData = [
-  {
-    rank: 1,
-    username: "user123",
-    avatar: null,
-    clean_days: 127,
-    total_saved: 15000000,
-    badge: "champion",
-  },
-  {
-    rank: 2,
-    username: "crypto_warrior",
-    avatar: null,
-    clean_days: 95,
-    total_saved: 8500000,
-    badge: "champion",
-  },
-  {
-    rank: 3,
-    username: "judol_fighter",
-    avatar: null,
-    clean_days: 78,
-    total_saved: 12000000,
-    badge: "fire_streak",
-  },
-  {
-    rank: 4,
-    username: "clean_life",
-    avatar: null,
-    clean_days: 65,
-    total_saved: 6200000,
-    badge: "fire_streak",
-  },
-  {
-    rank: 5,
-    username: "financial_freedom",
-    avatar: null,
-    clean_days: 54,
-    total_saved: 4800000,
-    badge: "fire_streak",
-  },
-]
-
-const getBadgeIcon = (badge: string) => {
-  switch (badge) {
-    case "champion":
-      return "⭐"
-    case "fire_streak":
-      return "🔥"
-    default:
-      return ""
+const getBadge = (streak: number) => {
+  if (streak >= 100) {
+    return { icon: "⭐", name: "Champion", variant: "default" as const }
   }
-}
-
-const getBadgeName = (badge: string) => {
-  switch (badge) {
-    case "champion":
-      return "Champion"
-    case "fire_streak":
-      return "Fire Streak"
-    default:
-      return ""
+  if (streak >= 30) {
+    return { icon: "🔥", name: "Fire Streak", variant: "secondary" as const }
   }
+  return null
 }
 
 const getRankIcon = (rank: number) => {
@@ -86,70 +31,160 @@ const getRankIcon = (rank: number) => {
 }
 
 export function CleanDaysLeaderboard() {
+  const [users, setUsers] = useState<LeaderboardUser[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const LIMIT = 10
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setIsLoading(true)
+      try {
+        const result = await getLeaderboard({
+          rankBy: "current_streak",
+          limit: LIMIT,
+          offset: 0,
+        })
+
+        if (result.success && result.data) {
+          setUsers(result.data)
+          if (result.data.length < LIMIT) {
+            setHasMore(false)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchLeaderboard()
+  }, [])
+
+  const loadMore = async () => {
+    setIsLoadingMore(true)
+    try {
+      const result = await getLeaderboard({
+        rankBy: "current_streak",
+        limit: LIMIT,
+        offset: users.length,
+      })
+
+      if (result.success && result.data) {
+        setUsers((prev) => [...prev, ...result.data])
+        if (result.data.length < LIMIT) {
+          setHasMore(false)
+        }
+      }
+    } catch (error) {
+      console.error("Error loading more:", error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="p-3 sm:p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">🔥 Clean Days Leaderboard</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Ranking berdasarkan hari bersih berturut-turut
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader className="p-3 sm:p-4 md:p-6">
         <CardTitle className="text-base sm:text-lg md:text-xl">🔥 Clean Days Leaderboard</CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          Ranking berdasarkan hari bersih berturut-turut tanpa judol
+          Ranking berdasarkan hari bersih berturut-turut
         </CardDescription>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
-        <div className="space-y-3 sm:space-y-4">
-          {mockLeaderboardData.map((user) => (
-            <div
-              key={user.rank}
-              className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-            >
-              {/* Rank */}
-              <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
-                {getRankIcon(user.rank)}
-              </div>
+        {users.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">
+            Belum ada data leaderboard
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3 sm:space-y-4">
+              {users.map((user) => {
+                const badge = getBadge(user.current_streak)
 
-              {/* Avatar */}
-              <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-                <div className="h-full w-full rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-sm sm:text-base font-semibold text-primary">
-                    {user.username[0].toUpperCase()}
-                  </span>
-                </div>
-              </Avatar>
+                return (
+                  <div
+                    key={user.user_id}
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    {/* Rank */}
+                    <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
+                      {getRankIcon(user.rank)}
+                    </div>
 
-              {/* User Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
-                  {user.badge && (
-                    <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
-                      {getBadgeIcon(user.badge)} {getBadgeName(user.badge)}
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    🔥 <span className="font-semibold text-clean">{user.clean_days} hari</span>
-                  </span>
-                  <span>•</span>
-                  <span className="hidden sm:inline">Saved {formatCurrency(user.total_saved)}</span>
-                  <span className="sm:hidden">{formatCurrency(user.total_saved)}</span>
-                </div>
-              </div>
+                    {/* Avatar */}
+                    <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
+                      <div className="h-full w-full rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-sm sm:text-base font-semibold text-primary">
+                          {user.username[0]?.toUpperCase() || "U"}
+                        </span>
+                      </div>
+                    </Avatar>
 
-              {/* View Profile Button */}
-              <button className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm rounded-md bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors flex-shrink-0">
-                <span className="hidden sm:inline">Lihat Profil</span>
-                <span className="sm:hidden">Profil</span>
-              </button>
+                    {/* User Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
+                        {badge && (
+                          <Badge variant={badge.variant} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
+                            {badge.icon} {badge.name}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          🔥 <span className="font-semibold text-clean">{user.current_streak} hari</span>
+                        </span>
+                        <span>•</span>
+                        <span>Total: {user.total_days_tracked} hari</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-          ))}
-        </div>
 
-        {/* Load More */}
-        <div className="mt-4 sm:mt-6 text-center">
-          <button className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors">
-            Load More Rankings
-          </button>
-        </div>
+            {/* Load More */}
+            {hasMore && (
+              <div className="mt-4 sm:mt-6 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={isLoadingMore}
+                  className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors disabled:opacity-50"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 className="inline h-4 w-4 animate-spin mr-2" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Load More Rankings"
+                  )}
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   )

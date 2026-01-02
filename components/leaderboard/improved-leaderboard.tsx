@@ -1,62 +1,20 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { formatCurrency } from "@/lib/utils"
-import { Trophy, Medal, Award, TrendingDown } from "lucide-react"
+import { Trophy, Medal, Award, Loader2 } from "lucide-react"
+import { getLeaderboard, LeaderboardUser } from "@/app/actions/leaderboard"
 
-// Mock data
-const mockImprovedData = [
-  {
-    rank: 1,
-    username: "progress_master",
-    avatar: null,
-    last_month_loss: 5000000,
-    this_month_loss: 1000000,
-    reduction_percent: 80,
-    badge: "rising_star",
-  },
-  {
-    rank: 2,
-    username: "getting_better",
-    avatar: null,
-    last_month_loss: 3000000,
-    this_month_loss: 900000,
-    reduction_percent: 70,
-    badge: "on_track",
-  },
-  {
-    rank: 3,
-    username: "slow_progress",
-    avatar: null,
-    last_month_loss: 2500000,
-    this_month_loss: 1000000,
-    reduction_percent: 60,
-    badge: "on_track",
-  },
-]
-
-const getBadgeIcon = (badge: string) => {
-  switch (badge) {
-    case "rising_star":
-      return "📈"
-    case "on_track":
-      return "🎯"
-    default:
-      return ""
+const getBadge = (totalDays: number) => {
+  if (totalDays >= 200) {
+    return { icon: "📈", name: "Rising Star", variant: "default" as const }
   }
-}
-
-const getBadgeName = (badge: string) => {
-  switch (badge) {
-    case "rising_star":
-      return "Rising Star"
-    case "on_track":
-      return "On Track"
-    default:
-      return ""
+  if (totalDays >= 100) {
+    return { icon: "🎯", name: "On Track", variant: "secondary" as const }
   }
+  return null
 }
 
 const getRankIcon = (rank: number) => {
@@ -73,79 +31,160 @@ const getRankIcon = (rank: number) => {
 }
 
 export function ImprovedLeaderboard() {
+  const [users, setUsers] = useState<LeaderboardUser[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const LIMIT = 10
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setIsLoading(true)
+      try {
+        const result = await getLeaderboard({
+          rankBy: "total_days",
+          limit: LIMIT,
+          offset: 0,
+        })
+
+        if (result.success && result.data) {
+          setUsers(result.data)
+          if (result.data.length < LIMIT) {
+            setHasMore(false)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchLeaderboard()
+  }, [])
+
+  const loadMore = async () => {
+    setIsLoadingMore(true)
+    try {
+      const result = await getLeaderboard({
+        rankBy: "total_days",
+        limit: LIMIT,
+        offset: users.length,
+      })
+
+      if (result.success && result.data) {
+        setUsers((prev) => [...prev, ...result.data])
+        if (result.data.length < LIMIT) {
+          setHasMore(false)
+        }
+      }
+    } catch (error) {
+      console.error("Error loading more:", error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="p-3 sm:p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">📈 Most Active Trackers</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Ranking berdasarkan total hari tracking
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader className="p-3 sm:p-4 md:p-6">
-        <CardTitle className="text-base sm:text-lg md:text-xl">📈 Most Improved</CardTitle>
+        <CardTitle className="text-base sm:text-lg md:text-xl">📈 Most Active Trackers</CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          User dengan pengurangan loss terbesar bulan ini
+          Ranking berdasarkan total hari tracking
         </CardDescription>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
-        <div className="space-y-3 sm:space-y-4">
-          {mockImprovedData.map((user) => {
-            const saved = user.last_month_loss - user.this_month_loss
-            return (
-              <div
-                key={user.rank}
-                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-              >
-                {/* Rank */}
-                <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
-                  {getRankIcon(user.rank)}
-                </div>
+        {users.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">
+            Belum ada data leaderboard
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3 sm:space-y-4">
+              {users.map((user) => {
+                const badge = getBadge(user.total_days_tracked)
 
-                {/* Avatar */}
-                <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-                  <div className="h-full w-full rounded-full bg-judol/10 flex items-center justify-center">
-                    <span className="text-sm sm:text-base font-semibold text-judol">
-                      {user.username[0].toUpperCase()}
-                    </span>
-                  </div>
-                </Avatar>
-
-                {/* User Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
-                    {user.badge && (
-                      <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
-                        {getBadgeIcon(user.badge)} {getBadgeName(user.badge)}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="space-y-0.5 sm:space-y-1">
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-clean" />
-                      <span className="font-semibold text-clean">
-                        -{user.reduction_percent}%
-                      </span>
-                      <span className="text-muted-foreground hidden sm:inline">
-                        dari bulan lalu
-                      </span>
+                return (
+                  <div
+                    key={user.user_id}
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  >
+                    {/* Rank */}
+                    <div className="flex items-center justify-center w-10 sm:w-12 flex-shrink-0">
+                      {getRankIcon(user.rank)}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Saved: <span className="font-semibold text-clean">{formatCurrency(saved)}</span> bulan ini
-                    </p>
-                  </div>
-                </div>
 
-                {/* View Profile Button */}
-                <button className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm rounded-md bg-judol/10 hover:bg-judol/20 text-judol font-medium transition-colors flex-shrink-0">
-                  <span className="hidden sm:inline">Lihat Profil</span>
-                  <span className="sm:hidden">Profil</span>
+                    {/* Avatar */}
+                    <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
+                      <div className="h-full w-full rounded-full bg-judol/10 flex items-center justify-center">
+                        <span className="text-sm sm:text-base font-semibold text-judol">
+                          {user.username[0]?.toUpperCase() || "U"}
+                        </span>
+                      </div>
+                    </Avatar>
+
+                    {/* User Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-semibold text-sm sm:text-base truncate">{user.username}</p>
+                        {badge && (
+                          <Badge variant={badge.variant} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0 sm:py-0.5">
+                            {badge.icon} {badge.name}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          📊 <span className="font-semibold text-clean">{user.total_days_tracked} hari</span>
+                        </span>
+                        <span>•</span>
+                        <span>Streak: {user.current_streak} hari</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Load More */}
+            {hasMore && (
+              <div className="mt-4 sm:mt-6 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={isLoadingMore}
+                  className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors disabled:opacity-50"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 className="inline h-4 w-4 animate-spin mr-2" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Load More Rankings"
+                  )}
                 </button>
               </div>
-            )
-          })}
-        </div>
-
-        {/* Load More */}
-        <div className="mt-4 sm:mt-6 text-center">
-          <button className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md border border-border hover:bg-accent transition-colors">
-            Load More Rankings
-          </button>
-        </div>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   )

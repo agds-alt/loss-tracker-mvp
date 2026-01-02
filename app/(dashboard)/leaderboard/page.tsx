@@ -11,11 +11,13 @@ export default async function LeaderboardPage() {
   if (!user) return null
 
   // Get user's stats for ranking card
-  const { data: userStats } = await supabase
+  const { data: userStatsArray } = await supabase
     .from("user_stats")
     .select("*")
     .eq("user_id", user.id)
-    .single()
+    .limit(1)
+
+  const userStats = userStatsArray?.[0] || null
 
   // Get user's current rankings (will implement after migration)
   // For now, using mock data
