@@ -4,6 +4,7 @@ import { QuickActions } from "@/components/dashboard/quick-actions"
 import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
 import { MotivationSection } from "@/components/dashboard/motivation-section"
 import { RecentTransactions } from "@/components/dashboard/recent-transactions"
+import { PnLCard } from "@/components/dashboard/pnl-card"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -39,6 +40,20 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false })
     .limit(10)
 
+  // Get all losses for PnL card
+  const { data: allLossesForPnL } = await supabase
+    .from("losses")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+
+  // Get user profile for username
+  const { data: userProfile } = await supabase
+    .from("users")
+    .select("username")
+    .eq("id", user.id)
+    .single() as { data: { username: string } | null }
+
   return (
     <div className="space-y-4 sm:space-y-6 md:space-y-8">
       <div>
@@ -53,6 +68,8 @@ export default async function DashboardPage() {
       <QuickActions />
 
       <WeekSummaryChart losses={recentLosses || []} />
+
+      <PnLCard losses={allLossesForPnL || []} username={userProfile?.username || "User"} />
 
       <RecentTransactions losses={allLosses || []} />
 
