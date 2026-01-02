@@ -26,7 +26,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "My Tracker", href: "/tracker", icon: TrendingDown },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
-  { name: "Komunitas", href: "/community", icon: Users, disabled: true },
+  { name: "Komunitas", href: "/community", icon: Users },
   { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
 
@@ -93,31 +93,18 @@ export function MobileNav({ user }: MobileNavProps) {
                 {navigation.map((item) => {
                   const Icon = item.icon
                   const isActive = pathname === item.href
-                  const isDisabled = item.disabled
 
                   return (
                     <Link
                       key={item.name}
-                      href={isDisabled ? "#" : item.href}
+                      href={item.href}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md transition-colors",
                         isActive
                           ? "bg-primary text-primary-foreground"
-                          : isDisabled
-                          ? "text-muted-foreground cursor-not-allowed opacity-50"
                           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       )}
-                      onClick={(e) => {
-                        if (isDisabled) {
-                          e.preventDefault()
-                          toast({
-                            title: "Segera Hadir",
-                            description: "Fitur ini akan segera hadir!",
-                          })
-                        } else {
-                          setOpen(false)
-                        }
-                      }}
+                      onClick={() => setOpen(false)}
                     >
                       <Icon className="h-5 w-5" />
                       {item.name}

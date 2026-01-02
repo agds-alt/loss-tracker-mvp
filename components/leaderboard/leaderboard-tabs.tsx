@@ -1,17 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CleanDaysLeaderboard } from "./clean-days-leaderboard"
 import { TurnaroundLeaderboard } from "./turnaround-leaderboard"
 import { ImprovedLeaderboard } from "./improved-leaderboard"
 
 export function LeaderboardTabs() {
-  const [activeTab, setActiveTab] = useState("clean_days")
-
   return (
     <div className="w-full">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs defaultValue="clean_days" className="w-full">
         <TabsList className="grid w-full grid-cols-3 h-auto p-1">
           <TabsTrigger
             value="clean_days"

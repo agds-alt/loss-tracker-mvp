@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { formatCurrency } from "@/lib/utils"
 import { Trophy, TrendingUp, Flame } from "lucide-react"
 import { Database } from "@/types/database.types"
 
@@ -16,7 +15,7 @@ interface MyRankingCardProps {
   }
 }
 
-export function MyRankingCard({ userStats, rankings }: MyRankingCardProps) {
+export function MyRankingCard({ rankings }: MyRankingCardProps) {
   const cleanDaysRank = rankings.clean_days.rank
   const totalUsers = rankings.clean_days.total
 
