@@ -23,9 +23,9 @@ interface SidebarProps {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "My Tracker", href: "/tracker", icon: TrendingDown },
-  { name: "Leaderboard", href: "/leaderboard", icon: Trophy, disabled: true },
+  { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Community", href: "/community", icon: Users, disabled: true },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
 
 export function Sidebar({ user }: SidebarProps) {

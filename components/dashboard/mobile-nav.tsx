@@ -25,7 +25,7 @@ interface MobileNavProps {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "My Tracker", href: "/tracker", icon: TrendingDown },
-  { name: "Leaderboard", href: "/leaderboard", icon: Trophy, disabled: true },
+  { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Komunitas", href: "/community", icon: Users, disabled: true },
   { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
