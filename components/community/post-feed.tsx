@@ -1,103 +1,98 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { PostCard } from "./post-card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
+import { getPosts } from "@/app/actions/posts"
 
 interface PostFeedProps {
   userId: string
   username: string
 }
 
-// Mock data for posts
-const mockPosts = [
-  {
-    id: "1",
-    user_id: "user1",
-    username: "progress_champ",
-    type: "milestone" as const,
-    content: "Akhirnya clean 30 hari! Dari yang dulu loss jutaan setiap minggu, sekarang udah bisa tahan. Terima kasih support dari temen-temen di sini! 💪",
-    image_url: null,
-    is_anonymous: false,
-    hashtags: ["clean30days", "milestone", "grateful"],
-    created_at: "2024-01-02T10:30:00Z",
-    reactions: {
-      support: 24,
-      love: 15,
-      congrats: 31,
-    },
-    comments_count: 12,
-    user_reaction: "congrats" as const,
-  },
-  {
-    id: "2",
-    user_id: "user2",
-    username: "Anonymous",
-    type: "support" as const,
-    content: "Hari ini gw kena trigger lagi liat temen menang besar. Gimana cara kalian handle FOMO kayak gini? Butuh saran soalnya gw hampir relapse...",
-    image_url: null,
-    is_anonymous: true,
-    hashtags: ["needhelp", "fomo"],
-    created_at: "2024-01-02T09:15:00Z",
-    reactions: {
-      support: 18,
-      love: 8,
-      congrats: 0,
-    },
-    comments_count: 23,
-    user_reaction: "support" as const,
-  },
-  {
-    id: "3",
-    user_id: "user3",
-    username: "comeback_king",
-    type: "story" as const,
-    content: "Cerita gw dari -50 juta jadi break even dalam 8 bulan. Kunci utama: konsisten tracking, gabung support group, dan fokus improve diri. Sekarang malah bisa nabung buat usaha. Recovery itu nyata guys! 🚀",
-    image_url: null,
-    is_anonymous: false,
-    hashtags: ["recoveryjourney", "inspiration"],
-    created_at: "2024-01-02T08:00:00Z",
-    reactions: {
-      support: 42,
-      love: 28,
-      congrats: 35,
-    },
-    comments_count: 34,
-    user_reaction: null,
-  },
-  {
-    id: "4",
-    user_id: "user4",
-    username: "smart_saver",
-    type: "tips" as const,
-    content: "Tips dari gw buat yang baru mulai clean:\n1. Block semua akses ke platform judi/trading\n2. Kasih duit ke orang terdekat yang bisa dipercaya\n3. Isi waktu luang dengan hobi baru\n4. Join komunitas support\n5. Tracking progress setiap hari\n\nYang penting konsisten! 💡",
-    image_url: null,
-    is_anonymous: false,
-    hashtags: ["tips", "recovery", "newbie"],
-    created_at: "2024-01-01T20:30:00Z",
-    reactions: {
-      support: 56,
-      love: 12,
-      congrats: 8,
-    },
-    comments_count: 18,
-    user_reaction: "support" as const,
-  },
-]
+interface Post {
+  id: string
+  user_id: string
+  type: "story" | "milestone" | "support" | "tips"
+  content: string
+  image_url: string | null
+  is_anonymous: boolean
+  hashtags: string[]
+  created_at: string
+  users: {
+    id: string
+    username: string
+    avatar_url: string | null
+  } | null
+  reactions: {
+    support: number
+    love: number
+    congrats: number
+  }
+  user_reaction: "support" | "love" | "congrats" | null
+  comments_count: number
+  username: string
+}
 
 export function PostFeed({ userId, username }: PostFeedProps) {
-  const [posts] = useState(mockPosts)
-  const [isLoading, setIsLoading] = useState(false)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const [offset, setOffset] = useState(0)
+  const LIMIT = 10
 
-  const loadMore = async () => {
-    setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    // In real implementation, load more posts from API
-    setHasMore(false)
-    setIsLoading(false)
+  const fetchPosts = useCallback(async (isInitial = false) => {
+    if (isInitial) {
+      setIsLoading(true)
+    } else {
+      setIsLoadingMore(true)
+    }
+
+    try {
+      const result = await getPosts({
+        limit: LIMIT,
+        offset: isInitial ? 0 : offset,
+      })
+
+      if (result.success && result.data) {
+        if (isInitial) {
+          setPosts(result.data as Post[])
+          setOffset(LIMIT)
+        } else {
+          setPosts((prev) => [...prev, ...(result.data as Post[])])
+          setOffset((prev) => prev + LIMIT)
+        }
+
+        // Check if there are more posts
+        if (result.data.length < LIMIT) {
+          setHasMore(false)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error)
+    } finally {
+      setIsLoading(false)
+      setIsLoadingMore(false)
+    }
+  }, [offset])
+
+  // Fetch initial posts
+  useEffect(() => {
+    fetchPosts(true)
+  }, [fetchPosts])
+
+  const loadMore = () => {
+    fetchPosts(false)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   if (posts.length === 0) {
@@ -115,7 +110,10 @@ export function PostFeed({ userId, username }: PostFeedProps) {
       {posts.map((post) => (
         <PostCard
           key={post.id}
-          post={post}
+          post={{
+            ...post,
+            username: post.is_anonymous ? "Anonymous" : (post.users?.username || "User"),
+          }}
           currentUserId={userId}
           currentUsername={username}
         />
@@ -126,10 +124,10 @@ export function PostFeed({ userId, username }: PostFeedProps) {
           <Button
             variant="outline"
             onClick={loadMore}
-            disabled={isLoading}
+            disabled={isLoadingMore}
             className="w-full sm:w-auto"
           >
-            {isLoading ? (
+            {isLoadingMore ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Memuat...

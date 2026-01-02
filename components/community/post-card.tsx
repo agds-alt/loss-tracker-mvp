@@ -11,6 +11,9 @@ import { cn } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
 import { CommentsSection } from "./comments-section"
+import { togglePostReaction } from "@/app/actions/reactions"
+import { deletePost } from "@/app/actions/posts"
+import { useRouter } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,11 +66,16 @@ export function PostCard({ post, currentUserId, currentUsername }: PostCardProps
   )
   const [reactionCounts, setReactionCounts] = useState(post.reactions)
   const { toast } = useToast()
+  const router = useRouter()
 
   const isOwnPost = post.user_id === currentUserId && !post.is_anonymous
   const typeConfig = postTypeConfig[post.type]
 
-  const handleReaction = (type: "support" | "love" | "congrats") => {
+  const handleReaction = async (type: "support" | "love" | "congrats") => {
+    // Optimistic update
+    const previousReaction = currentReaction
+    const previousCounts = { ...reactionCounts }
+
     if (currentReaction === type) {
       // Remove reaction
       setCurrentReaction(null)
@@ -86,14 +94,55 @@ export function PostCard({ post, currentUserId, currentUsername }: PostCardProps
       setReactionCounts(newCounts)
     }
 
-    // TODO: Send API request to update reaction
+    // Send to server
+    try {
+      const result = await togglePostReaction(post.id, type)
+      if (!result.success) {
+        // Revert on error
+        setCurrentReaction(previousReaction)
+        setReactionCounts(previousCounts)
+        toast({
+          title: "Gagal update reaction",
+          description: result.error,
+          variant: "destructive",
+        })
+      }
+    } catch {
+      // Revert on error
+      setCurrentReaction(previousReaction)
+      setReactionCounts(previousCounts)
+      toast({
+        title: "Gagal update reaction",
+        description: "Silakan coba lagi",
+        variant: "destructive",
+      })
+    }
   }
 
-  const handleDelete = () => {
-    toast({
-      title: "Post akan dihapus",
-      description: "Fitur ini akan segera hadir!",
-    })
+  const handleDelete = async () => {
+    if (!confirm("Yakin mau hapus post ini?")) return
+
+    try {
+      const result = await deletePost(post.id)
+      if (result.success) {
+        toast({
+          title: "Post berhasil dihapus",
+        })
+        router.refresh()
+      } else {
+        toast({
+          title: "Gagal hapus post",
+          description: result.error,
+          variant: "destructive",
+        })
+      }
+    } catch {
+      toast({
+        title: "Gagal hapus post",
+        description: "Silakan coba lagi",
+        variant: "destructive",
+      })
+    }
   }
 
   const handleReport = () => {

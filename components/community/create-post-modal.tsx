@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Image, X, Hash } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { createPost } from "@/app/actions/posts"
+import { useRouter } from "next/navigation"
 
 interface CreatePostModalProps {
   open: boolean
@@ -34,6 +36,7 @@ export function CreatePostModal({ open, onOpenChange, username }: CreatePostModa
   const [hashtagInput, setHashtagInput] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const router = useRouter()
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -75,9 +78,18 @@ export function CreatePostModal({ open, onOpenChange, username }: CreatePostModa
     setIsSubmitting(true)
 
     try {
-      // TODO: Implement actual API call to create post
-      // For now, just simulate success
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Create post using server action
+      const result = await createPost({
+        type: postType,
+        content: content.trim(),
+        image_url: imagePreview,
+        is_anonymous: isAnonymous,
+        hashtags: hashtags,
+      })
+
+      if (!result.success) {
+        throw new Error(result.error)
+      }
 
       toast({
         title: "Post berhasil dibuat!",
@@ -91,10 +103,13 @@ export function CreatePostModal({ open, onOpenChange, username }: CreatePostModa
       setImagePreview(null)
       setHashtags([])
       onOpenChange(false)
-    } catch {
+
+      // Refresh the page to show new post
+      router.refresh()
+    } catch (error) {
       toast({
         title: "Gagal membuat post",
-        description: "Terjadi kesalahan, silakan coba lagi",
+        description: error instanceof Error ? error.message : "Terjadi kesalahan, silakan coba lagi",
         variant: "destructive",
       })
     } finally {
