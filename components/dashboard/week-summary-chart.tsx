@@ -55,9 +55,9 @@ export function WeekSummaryChart({ losses }: WeekSummaryChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>This Week Summary</CardTitle>
+        <CardTitle>Ringkasan Minggu Ini</CardTitle>
         <p className="text-sm text-muted-foreground mt-1">
-          Track your deposits (red) vs withdrawals (green) over the last 7 days
+          Tracking deposit (merah) vs WD (hijau) selama 7 hari terakhir
         </p>
       </CardHeader>
       <CardContent>
@@ -67,8 +67,8 @@ export function WeekSummaryChart({ losses }: WeekSummaryChartProps) {
             <XAxis dataKey="name" />
             <YAxis
               tickFormatter={(value) => {
-                if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`
-                if (value >= 1000) return `${(value / 1000).toFixed(0)}K`
+                if (value >= 1000000) return `${(value / 1000000).toFixed(1)} juta`
+                if (value >= 1000) return `${(value / 1000).toFixed(0)} ribu`
                 return value.toString()
               }}
             />
@@ -81,8 +81,8 @@ export function WeekSummaryChart({ losses }: WeekSummaryChartProps) {
               }}
             />
             <Legend />
-            <Bar dataKey="deposits" fill="#ef4444" name="Deposits" />
-            <Bar dataKey="withdrawals" fill="#22c55e" name="Withdrawals" />
+            <Bar dataKey="deposits" fill="#ef4444" name="Deposit" />
+            <Bar dataKey="withdrawals" fill="#22c55e" name="WD" />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
