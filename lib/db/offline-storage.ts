@@ -1,213 +1,82 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
+import { Database } from '@/types/database.types'
 
-interface Loss {
-  id: string
-  user_id: string
-  type: 'casino' | 'crypto'
-  site_coin_name: string
-  amount: number
-  date: string
-  notes: string | null
-  is_win: boolean
-  created_at: string
-  synced: boolean
-  temp_id?: string // For offline-created entries
-}
+type Loss = Database["public"]["Tables"]["losses"]["Row"]
 
 interface LossTrackerDB extends DBSchema {
-  // @ts-expect-error - idb DBSchema strict type checking issue
   losses: {
     key: string
     value: Loss
-    indexes: {
-      'by-synced': boolean
-      'by-user': string
-      'by-date': string
-    }
+    indexes: { 'by-user': string }
   }
   sync_queue: {
     key: string
     value: {
       id: string
-      action: 'create' | 'update' | 'delete'
-      data: Loss
+      loss: Loss
       timestamp: number
     }
-    indexes: {
-      'by-timestamp': number
-    }
   }
 }
 
-let dbInstance: IDBPDatabase<LossTrackerDB> | null = null
+let dbPromise: Promise<IDBPDatabase<LossTrackerDB>> | null = null
 
-export async function initDB(): Promise<IDBPDatabase<LossTrackerDB>> {
-  if (dbInstance) {
-    return dbInstance
-  }
+export function getDB() {
+  if (!dbPromise) {
+    dbPromise = openDB<LossTrackerDB>('loss-tracker-db', 1, {
+      upgrade(db) {
+        // Create losses store
+        if (!db.objectStoreNames.contains('losses')) {
+          const lossStore = db.createObjectStore('losses', { keyPath: 'id' })
+          lossStore.createIndex('by-user', 'user_id')
+        }
 
-  dbInstance = await openDB<LossTrackerDB>('loss-tracker-db', 1, {
-    upgrade(db) {
-      // Create losses store
-      if (!db.objectStoreNames.contains('losses')) {
-        const lossStore = db.createObjectStore('losses', { keyPath: 'id' })
-        lossStore.createIndex('by-synced', 'synced')
-        lossStore.createIndex('by-user', 'user_id')
-        lossStore.createIndex('by-date', 'date')
-      }
-
-      // Create sync queue store
-      if (!db.objectStoreNames.contains('sync_queue')) {
-        const syncStore = db.createObjectStore('sync_queue', { keyPath: 'id' })
-        syncStore.createIndex('by-timestamp', 'timestamp')
-      }
-    },
-  })
-
-  return dbInstance
-}
-
-// Save loss to offline storage
-export async function saveLossOffline(loss: Omit<Loss, 'synced' | 'temp_id'>): Promise<string> {
-  const db = await initDB()
-  const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
-  const lossWithSync: Loss = {
-    ...loss,
-    synced: false,
-    temp_id: tempId,
-  }
-
-  await db.put('losses', lossWithSync)
-
-  // Add to sync queue
-  await db.put('sync_queue', {
-    id: tempId,
-    action: 'create',
-    data: lossWithSync,
-    timestamp: Date.now(),
-  })
-
-  return tempId
-}
-
-// Update loss in offline storage
-export async function updateLossOffline(id: string, updates: Partial<Loss>): Promise<void> {
-  const db = await initDB()
-  const existingLoss = await db.get('losses', id)
-
-  if (!existingLoss) {
-    throw new Error('Loss not found in offline storage')
-  }
-
-  const updatedLoss: Loss = {
-    ...existingLoss,
-    ...updates,
-    synced: false,
-  }
-
-  await db.put('losses', updatedLoss)
-
-  // Add to sync queue
-  await db.put('sync_queue', {
-    id: `update_${Date.now()}_${id}`,
-    action: 'update',
-    data: updatedLoss,
-    timestamp: Date.now(),
-  })
-}
-
-// Delete loss from offline storage
-export async function deleteLossOffline(id: string): Promise<void> {
-  const db = await initDB()
-  const existingLoss = await db.get('losses', id)
-
-  if (!existingLoss) {
-    throw new Error('Loss not found in offline storage')
-  }
-
-  await db.delete('losses', id)
-
-  // Add to sync queue
-  await db.put('sync_queue', {
-    id: `delete_${Date.now()}_${id}`,
-    action: 'delete',
-    data: existingLoss,
-    timestamp: Date.now(),
-  })
-}
-
-// Get all losses from offline storage
-export async function getAllLossesOffline(userId: string): Promise<Loss[]> {
-  const db = await initDB()
-  const allLosses = await db.getAllFromIndex('losses', 'by-user', userId)
-  return allLosses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-}
-
-// Get unsynced losses
-export async function getUnsyncedLosses(): Promise<Loss[]> {
-  const db = await initDB()
-  return db.getAllFromIndex('losses', 'by-synced', false)
-}
-
-// Get sync queue
-export async function getSyncQueue() {
-  const db = await initDB()
-  const queue = await db.getAllFromIndex('sync_queue', 'by-timestamp')
-  return queue.sort((a, b) => a.timestamp - b.timestamp)
-}
-
-// Mark loss as synced
-export async function markAsSynced(tempId: string, realId: string): Promise<void> {
-  const db = await initDB()
-  const loss = await db.get('losses', tempId)
-
-  if (loss) {
-    // Update with real ID from server
-    await db.delete('losses', tempId)
-    await db.put('losses', {
-      ...loss,
-      id: realId,
-      synced: true,
-      temp_id: undefined,
+        // Create sync queue store
+        if (!db.objectStoreNames.contains('sync_queue')) {
+          db.createObjectStore('sync_queue', { keyPath: 'id' })
+        }
+      },
     })
   }
-
-  // Remove from sync queue
-  await db.delete('sync_queue', tempId)
+  return dbPromise
 }
 
-// Clear sync queue item
-export async function clearSyncQueueItem(queueId: string): Promise<void> {
-  const db = await initDB()
-  await db.delete('sync_queue', queueId)
-}
+export async function saveLossOffline(loss: Loss) {
+  const db = await getDB()
+  const tx = db.transaction(['losses', 'sync_queue'], 'readwrite')
 
-// Sync all losses from server to offline storage
-export async function syncLossesFromServer(losses: Omit<Loss, 'synced'>[]): Promise<void> {
-  const db = await initDB()
-  const tx = db.transaction('losses', 'readwrite')
+  // Save to losses store
+  await tx.objectStore('losses').put(loss)
 
-  for (const loss of losses) {
-    await tx.store.put({
-      ...loss,
-      synced: true,
-    })
-  }
+  // Add to sync queue
+  await tx.objectStore('sync_queue').put({
+    id: `sync_${Date.now()}_${Math.random()}`,
+    loss,
+    timestamp: Date.now(),
+  })
 
   await tx.done
 }
 
-// Clear all offline data (for logout)
-export async function clearOfflineData(): Promise<void> {
-  const db = await initDB()
-  await db.clear('losses')
-  await db.clear('sync_queue')
+export async function getOfflineLosses(userId: string): Promise<Loss[]> {
+  const db = await getDB()
+  const allLosses = await db.getAllFromIndex('losses', 'by-user', userId)
+  return allLosses
 }
 
-// Check if offline storage has data
-export async function hasOfflineData(): Promise<boolean> {
-  const db = await initDB()
-  const count = await db.count('losses')
-  return count > 0
+export async function getSyncQueue() {
+  const db = await getDB()
+  return await db.getAll('sync_queue')
+}
+
+export async function clearSyncQueue() {
+  const db = await getDB()
+  const tx = db.transaction('sync_queue', 'readwrite')
+  await tx.objectStore('sync_queue').clear()
+  await tx.done
+}
+
+export async function removeSyncedLoss(syncId: string) {
+  const db = await getDB()
+  await db.delete('sync_queue', syncId)
 }
