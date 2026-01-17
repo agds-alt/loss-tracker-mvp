@@ -101,76 +101,76 @@ export function InputForm() {
 
   return (
     <Card className="sticky top-6 z-10 shadow-lg">
-      <CardHeader>
-        <CardTitle>Add New Transaction</CardTitle>
+      <CardHeader className="p-3 sm:p-4 md:p-6">
+        <CardTitle className="text-base sm:text-lg md:text-xl">Add New Transaction</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+        <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3 md:space-y-4">
           {/* Type Selection */}
-          <div className="space-y-2">
-            <Label>Type</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="text-xs sm:text-sm">Type</Label>
             <RadioGroup
               value={formData.type}
               onValueChange={(value: "judol" | "crypto") =>
                 setFormData({ ...formData, type: value })
               }
-              className="flex gap-4"
+              className="flex gap-3 sm:gap-4"
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <RadioGroupItem value="judol" id="judol" />
-                <Label htmlFor="judol" className="cursor-pointer font-normal">
+                <Label htmlFor="judol" className="cursor-pointer font-normal text-xs sm:text-sm">
                   Judol
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <RadioGroupItem value="crypto" id="crypto" />
-                <Label htmlFor="crypto" className="cursor-pointer font-normal">
+                <Label htmlFor="crypto" className="cursor-pointer font-normal text-xs sm:text-sm">
                   Crypto
                 </Label>
               </div>
             </RadioGroup>
           </div>
 
-          {/* Win/Loss Selection */}
-          <div className="space-y-2">
-            <Label>Transaction Type</Label>
-            <div className="grid grid-cols-2 gap-3">
+          {/* Win/Loss Selection - More compact */}
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="text-xs sm:text-sm">Transaction Type</Label>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: false })}
-                className={`p-4 rounded-lg border-2 transition-all ${
+                className={`p-2.5 sm:p-3 md:p-4 rounded-lg border-2 transition-all ${
                   !formData.is_win
                     ? "border-destructive bg-destructive/10"
                     : "border-border hover:border-destructive/50"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <ArrowDown className="h-5 w-5 text-destructive" />
-                  <span className="font-semibold">LOSS</span>
+                <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                  <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                  <span className="font-semibold text-xs sm:text-sm">LOSS</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Deposit / Modal</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Deposit</p>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: true })}
-                className={`p-4 rounded-lg border-2 transition-all ${
+                className={`p-2.5 sm:p-3 md:p-4 rounded-lg border-2 transition-all ${
                   formData.is_win
                     ? "border-clean bg-clean/10"
                     : "border-border hover:border-clean/50"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <ArrowUp className="h-5 w-5 text-clean" />
-                  <span className="font-semibold">WIN</span>
+                <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                  <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-clean" />
+                  <span className="font-semibold text-xs sm:text-sm">WIN</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Withdraw / Profit</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Withdraw</p>
               </button>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="site_coin_name">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="site_coin_name" className="text-xs sm:text-sm">
                 {formData.type === "judol" ? "Site Name" : "Coin Name"}
               </Label>
               <Input
@@ -191,8 +191,8 @@ export function InputForm() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="amount">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="amount" className="text-xs sm:text-sm">
                 Amount (Rp)
               </Label>
               <Input

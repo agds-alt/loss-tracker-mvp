@@ -21,11 +21,11 @@ export function HeroStats({ stats }: HeroStatsProps) {
   const cleanDays = stats?.clean_days || 0
 
   return (
-    <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
       {/* Judol Card */}
       <Card className="border-l-4 border-l-judol">
-        <CardContent className="p-3 sm:p-4 md:p-6">
-          <div className="flex items-start justify-between mb-2 sm:mb-3 md:mb-4">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
+          <div className="flex items-start justify-between mb-2 sm:mb-3 lg:mb-4">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                 Aktivitas Judol
@@ -71,8 +71,8 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
       {/* Crypto Card */}
       <Card className="border-l-4 border-l-crypto">
-        <CardContent className="p-3 sm:p-4 md:p-6">
-          <div className="flex items-start justify-between mb-2 sm:mb-3 md:mb-4">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
+          <div className="flex items-start justify-between mb-2 sm:mb-3 lg:mb-4">
             <div>
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                 Aktivitas Crypto
@@ -118,7 +118,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
       {/* Clean Days Card */}
       <Card className="border-l-4 border-l-clean">
-        <CardContent className="p-3 sm:p-4 md:p-6">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs sm:text-sm font-medium text-muted-foreground">

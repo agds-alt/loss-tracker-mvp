@@ -4,12 +4,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CleanDaysLeaderboard } from "./clean-days-leaderboard"
 import { TurnaroundLeaderboard } from "./turnaround-leaderboard"
 import { ImprovedLeaderboard } from "./improved-leaderboard"
+import { WithdrawalLeaderboard } from "./withdrawal-leaderboard"
 
 export function LeaderboardTabs() {
   return (
     <div className="w-full">
-      <Tabs defaultValue="clean_days" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 h-auto p-1">
+      <Tabs defaultValue="withdrawals" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 h-auto p-1">
+          <TabsTrigger
+            value="withdrawals"
+            className="text-xs sm:text-sm py-2 sm:py-2.5 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-600"
+          >
+            <span className="hidden sm:inline">💰 Withdrawals</span>
+            <span className="sm:hidden">💰 WD</span>
+          </TabsTrigger>
           <TabsTrigger
             value="clean_days"
             className="text-xs sm:text-sm py-2 sm:py-2.5 data-[state=active]:bg-clean/20 data-[state=active]:text-clean"
@@ -28,12 +36,16 @@ export function LeaderboardTabs() {
             value="improved"
             className="text-xs sm:text-sm py-2 sm:py-2.5 data-[state=active]:bg-judol/20 data-[state=active]:text-judol"
           >
-            <span className="hidden sm:inline">📈 Most Improved</span>
-            <span className="sm:hidden">📈 Improve</span>
+            <span className="hidden sm:inline">📈 Improved</span>
+            <span className="sm:hidden">📈 +</span>
           </TabsTrigger>
         </TabsList>
 
         <div className="mt-4 sm:mt-6">
+          <TabsContent value="withdrawals" className="mt-0">
+            <WithdrawalLeaderboard />
+          </TabsContent>
+
           <TabsContent value="clean_days" className="mt-0">
             <CleanDaysLeaderboard />
           </TabsContent>
