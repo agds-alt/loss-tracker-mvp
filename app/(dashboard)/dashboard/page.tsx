@@ -5,6 +5,8 @@ import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
 import { MotivationSection } from "@/components/dashboard/motivation-section"
 import { RecentTransactions } from "@/components/dashboard/recent-transactions"
 import { PnLCard } from "@/components/dashboard/pnl-card"
+import { TopSitesRankings } from "@/components/dashboard/top-sites-rankings"
+import { getTopWithdrawals, getTopDeposits } from "@/lib/db/stats-queries"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -54,6 +56,10 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single() as { data: { username: string } | null }
 
+  // Get top sites rankings
+  const topWithdrawals = await getTopWithdrawals(supabase, user.id, 5)
+  const topDeposits = await getTopDeposits(supabase, user.id, 5)
+
   return (
     <div className="space-y-4 sm:space-y-6 md:space-y-8">
       <div>
@@ -66,6 +72,11 @@ export default async function DashboardPage() {
       <HeroStats stats={stats} />
 
       <QuickActions />
+
+      <TopSitesRankings
+        topWithdrawals={topWithdrawals}
+        topDeposits={topDeposits}
+      />
 
       <WeekSummaryChart losses={recentLosses || []} />
 
