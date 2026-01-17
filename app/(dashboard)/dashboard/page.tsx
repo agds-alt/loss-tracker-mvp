@@ -45,9 +45,9 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <HeroStats stats={stats} />
-
       <WeekSummaryChart losses={recentLosses || []} />
+
+      <HeroStats stats={stats} />
 
       <RecentTransactions losses={allLosses || []} />
     </div>
