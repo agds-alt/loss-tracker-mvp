@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
 import { HeroStats } from "@/components/dashboard/hero-stats"
-import { QuickActions } from "@/components/dashboard/quick-actions"
 import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
 import { MotivationSection } from "@/components/dashboard/motivation-section"
 import { RecentTransactions } from "@/components/dashboard/recent-transactions"
@@ -70,8 +69,6 @@ export default async function DashboardPage() {
       </div>
 
       <HeroStats stats={stats} />
-
-      <QuickActions />
 
       <TopSitesRankings
         topWithdrawals={topWithdrawals}
