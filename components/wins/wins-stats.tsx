@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, TrendingUp, Trophy, Target } from "lucide-react"
+import { formatCurrency } from "@/lib/utils"
+import { EMPTY_STATE_MESSAGES } from "@/lib/constants/messages"
 
 interface WinsStatsProps {
   stats: {
@@ -14,20 +16,12 @@ interface WinsStatsProps {
 }
 
 export function WinsStats({ stats }: WinsStatsProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
 
   if (!stats) {
     return (
       <Card>
         <CardContent className="pt-6 text-center text-muted-foreground">
-          Belum ada data withdrawal. Tambahkan withdrawal pertama mu!
+          {EMPTY_STATE_MESSAGES.NO_WITHDRAWALS}
         </CardContent>
       </Card>
     )

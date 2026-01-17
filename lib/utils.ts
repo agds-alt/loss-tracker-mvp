@@ -1,22 +1,32 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { MOTIVATIONAL_QUOTES } from "@/lib/constants/messages"
 
+/**
+ * Merge Tailwind classes with clsx
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(amount)
-}
+/**
+ * Re-export formatting utilities from centralized locations
+ */
+export { formatCurrency, formatCompactNumber, formatCompactNumberID } from "@/lib/formatting/currency"
+export { formatDate, formatDateID, getTodayISO } from "@/lib/formatting/date"
 
+/**
+ * Format number for Indonesian locale
+ */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat('id-ID').format(num)
+  return new Intl.NumberFormat("id-ID").format(num)
 }
 
+/**
+ * Calculate clean days (days without judol)
+ * @param lastJudolDate - Last date of judol activity
+ * @returns Number of clean days
+ */
 export function calculateCleanDays(lastJudolDate: Date | null): number {
   if (!lastJudolDate) return 0
   const now = new Date()
@@ -25,20 +35,11 @@ export function calculateCleanDays(lastJudolDate: Date | null): number {
   return diffDays
 }
 
+/**
+ * Get a motivational quote based on current date
+ * @returns Motivational quote string
+ */
 export function getMotivationalQuote(): string {
-  const quotes = [
-    "Setiap hari tanpa judol adalah kemenangan! 🎯",
-    "Investasi terbaik adalah pada diri sendiri, bukan di kasino! 💪",
-    "Uang yang kamu hemat hari ini = masa depan yang lebih cerah! ✨",
-    "Tobat bukan cuma bicara, tapi action nyata! 🔥",
-    "Crypto butuh skill, judol cuma nasib. Pilih yang mana? 🧠",
-    "Lost? Learn. Win? Track. Never gamble. 📊",
-    "Financial freedom starts with saying NO to judol! 🚫",
-    "Every rupiah saved is a step closer to your dreams! 🎯",
-    "Disiplin hari ini = kebebasan finansial besok! 💰",
-    "Track your losses, fix your habits, build your future! 🏆"
-  ]
-
   const today = new Date().getDate()
-  return quotes[today % quotes.length]
+  return MOTIVATIONAL_QUOTES[today % MOTIVATIONAL_QUOTES.length]
 }

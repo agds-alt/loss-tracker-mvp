@@ -7,6 +7,8 @@ import { formatCurrency } from "@/lib/utils"
 import { Download, TrendingDown, TrendingUp, Target, Award, Loader2 } from "lucide-react"
 import { Database } from "@/types/database.types"
 import { useToast } from "@/components/ui/use-toast"
+import { calculateTransactionStats, calculateTypeBreakdown } from "@/lib/calculations/transaction-stats"
+import { TOAST_MESSAGES, LABEL_TEXT } from "@/lib/constants/messages"
 
 type Loss = Database["public"]["Tables"]["losses"]["Row"]
 
@@ -20,45 +22,23 @@ export function PnLCard({ losses, username }: PnLCardProps) {
   const { toast } = useToast()
   const [isDownloading, setIsDownloading] = useState(false)
 
-  // Calculate stats
-  const totalDeposits = losses
-    .filter((l) => !l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
+  // Calculate stats using utility functions
+  const stats = calculateTransactionStats(losses)
+  const typeBreakdown = calculateTypeBreakdown(losses)
 
-  const totalWithdrawals = losses
-    .filter((l) => l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
+  const {
+    totalDeposits,
+    totalWithdrawals,
+    netPnL,
+    isProfitable,
+    totalWins,
+    totalDepositsCount,
+    totalTransactions,
+    winRate,
+    uniqueSites,
+  } = stats
 
-  const netPnL = totalWithdrawals - totalDeposits
-  const isProfitable = netPnL >= 0
-
-  const totalTransactions = losses.length
-  const totalWins = losses.filter((l) => l.is_win).length
-  const totalDepositsCount = losses.filter((l) => !l.is_win).length
-  const winRate = totalTransactions > 0 ? (totalWins / totalTransactions) * 100 : 0
-
-  // Count unique sites
-  const uniqueSites = new Set(losses.map((l) => l.site_coin_name.toLowerCase())).size
-
-  // Breakdown by type
-  const judolDeposits = losses
-    .filter((l) => l.type === "judol" && !l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
-
-  const judolWithdrawals = losses
-    .filter((l) => l.type === "judol" && l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
-
-  const cryptoDeposits = losses
-    .filter((l) => l.type === "crypto" && !l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
-
-  const cryptoWithdrawals = losses
-    .filter((l) => l.type === "crypto" && l.is_win)
-    .reduce((sum, l) => sum + Number(l.amount), 0)
-
-  const judolPnL = judolWithdrawals - judolDeposits
-  const cryptoPnL = cryptoWithdrawals - cryptoDeposits
+  const { judol, crypto } = typeBreakdown
 
   const handleDownload = async () => {
     if (!cardRef.current || isDownloading) return
@@ -66,8 +46,8 @@ export function PnLCard({ losses, username }: PnLCardProps) {
     setIsDownloading(true)
     try {
       toast({
-        title: "Membuat gambar...",
-        description: "Mohon tunggu sebentar.",
+        title: TOAST_MESSAGES.INFO.CREATING_IMAGE,
+        description: TOAST_MESSAGES.INFO.LOADING,
       })
 
       // Lazy load html2canvas
@@ -87,14 +67,14 @@ export function PnLCard({ losses, username }: PnLCardProps) {
       link.click()
 
       toast({
-        title: "Berhasil!",
-        description: "PnL card berhasil diunduh.",
+        title: TOAST_MESSAGES.SUCCESS.DOWNLOAD_SUCCESS,
+        description: TOAST_MESSAGES.SUCCESS.DOWNLOAD_SUCCESS,
       })
     } catch {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Gagal mengunduh PnL card.",
+        description: TOAST_MESSAGES.ERROR.DOWNLOAD_FAILED,
       })
     } finally {
       setIsDownloading(false)
@@ -202,25 +182,25 @@ export function PnLCard({ losses, username }: PnLCardProps) {
               <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <span className="text-lg sm:text-2xl">🎰</span>
-                  <span className="font-semibold text-xs sm:text-sm md:text-base">Judol</span>
+                  <span className="font-semibold text-xs sm:text-sm md:text-base">{LABEL_TEXT.JUDOL}</span>
                 </div>
                 <span
                   className={`text-sm sm:text-lg md:text-xl font-bold ${
-                    judolPnL >= 0 ? "text-green-300" : "text-red-300"
+                    judol.isProfitable ? "text-green-300" : "text-red-300"
                   }`}
                 >
-                  {judolPnL >= 0 ? "+" : "-"}
-                  {formatCurrency(Math.abs(judolPnL))}
+                  {judol.isProfitable ? "+" : "-"}
+                  {formatCurrency(Math.abs(judol.netPnL))}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs md:text-sm">
                 <div>
-                  <p className="text-white/70">Deposit</p>
-                  <p className="font-semibold">{formatCurrency(judolDeposits)}</p>
+                  <p className="text-white/70">{LABEL_TEXT.DEPOSIT}</p>
+                  <p className="font-semibold">{formatCurrency(judol.deposits)}</p>
                 </div>
                 <div>
-                  <p className="text-white/70">Penarikan</p>
-                  <p className="font-semibold">{formatCurrency(judolWithdrawals)}</p>
+                  <p className="text-white/70">{LABEL_TEXT.WITHDRAWAL}</p>
+                  <p className="font-semibold">{formatCurrency(judol.withdrawals)}</p>
                 </div>
               </div>
             </div>
@@ -230,25 +210,25 @@ export function PnLCard({ losses, username }: PnLCardProps) {
               <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <span className="text-lg sm:text-2xl">₿</span>
-                  <span className="font-semibold text-xs sm:text-sm md:text-base">Crypto</span>
+                  <span className="font-semibold text-xs sm:text-sm md:text-base">{LABEL_TEXT.CRYPTO}</span>
                 </div>
                 <span
                   className={`text-sm sm:text-lg md:text-xl font-bold ${
-                    cryptoPnL >= 0 ? "text-green-300" : "text-red-300"
+                    crypto.isProfitable ? "text-green-300" : "text-red-300"
                   }`}
                 >
-                  {cryptoPnL >= 0 ? "+" : "-"}
-                  {formatCurrency(Math.abs(cryptoPnL))}
+                  {crypto.isProfitable ? "+" : "-"}
+                  {formatCurrency(Math.abs(crypto.netPnL))}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs md:text-sm">
                 <div>
-                  <p className="text-white/70">Deposit</p>
-                  <p className="font-semibold">{formatCurrency(cryptoDeposits)}</p>
+                  <p className="text-white/70">{LABEL_TEXT.DEPOSIT}</p>
+                  <p className="font-semibold">{formatCurrency(crypto.deposits)}</p>
                 </div>
                 <div>
-                  <p className="text-white/70">Penarikan</p>
-                  <p className="font-semibold">{formatCurrency(cryptoWithdrawals)}</p>
+                  <p className="text-white/70">{LABEL_TEXT.WITHDRAWAL}</p>
+                  <p className="font-semibold">{formatCurrency(crypto.withdrawals)}</p>
                 </div>
               </div>
             </div>
