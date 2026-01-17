@@ -85,16 +85,20 @@ export function PnLCard({ losses, username }: PnLCardProps) {
     <div className="space-y-3 sm:space-y-4">
       <div
         ref={cardRef}
-        className="relative overflow-hidden rounded-xl border-2 shadow-2xl"
+        className="relative overflow-hidden rounded-2xl border shadow-2xl"
         style={{
           background: isProfitable
-            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-            : "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            ? "linear-gradient(135deg, #000000 0%, #0a3d0f 50%, #000000 100%)"
+            : "linear-gradient(135deg, #000000 0%, #3d0a0a 50%, #000000 100%)",
+          borderColor: isProfitable
+            ? "rgba(34, 197, 94, 0.3)"
+            : "rgba(239, 68, 68, 0.3)",
         }}
       >
-        {/* Decorative circles - hidden on mobile */}
-        <div className="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32" />
-        <div className="hidden sm:block absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24" />
+        {/* Decorative gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-50" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-radial from-white/10 to-transparent blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-radial from-white/5 to-transparent blur-3xl" />
 
         <CardContent className="relative p-3 sm:p-6 md:p-8 text-white">
           {/* Header */}

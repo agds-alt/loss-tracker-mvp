@@ -100,9 +100,14 @@ export function InputForm() {
   }
 
   return (
-    <Card className="sticky top-6 z-10 shadow-lg">
-      <CardHeader className="p-3 sm:p-4 md:p-6">
-        <CardTitle className="text-base sm:text-lg md:text-xl">Add New Transaction</CardTitle>
+    <Card className="sticky top-6 z-10 border border-white/10 bg-gradient-to-br from-zinc-950 to-black shadow-2xl">
+      <CardHeader className="p-3 sm:p-4 md:p-6 border-b border-white/5">
+        <CardTitle className="text-base sm:text-lg md:text-xl flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center">
+            <span className="text-lg">➕</span>
+          </div>
+          Add Transaction
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
         <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3 md:space-y-4">
@@ -138,32 +143,40 @@ export function InputForm() {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: false })}
-                className={`p-2.5 sm:p-3 md:p-4 rounded-lg border-2 transition-all ${
+                className={`p-3 sm:p-4 rounded-xl border-2 transition-all group ${
                   !formData.is_win
-                    ? "border-destructive bg-destructive/10"
-                    : "border-border hover:border-destructive/50"
+                    ? "border-red-500/50 bg-gradient-to-br from-red-950/30 to-black shadow-lg shadow-red-500/10"
+                    : "border-white/10 bg-black/40 hover:border-red-500/30"
                 }`}
               >
-                <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                  <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
-                  <span className="font-semibold text-xs sm:text-sm">LOSS</span>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
+                    !formData.is_win ? "bg-red-500/20" : "bg-white/5"
+                  }`}>
+                    <ArrowDown className={`h-4 w-4 ${!formData.is_win ? "text-red-400" : "text-muted-foreground"}`} />
+                  </div>
+                  <span className={`font-bold text-sm ${!formData.is_win ? "text-red-400" : "text-muted-foreground"}`}>LOSS</span>
                 </div>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Deposit</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground/60">Deposit ke platform</p>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, is_win: true })}
-                className={`p-2.5 sm:p-3 md:p-4 rounded-lg border-2 transition-all ${
+                className={`p-3 sm:p-4 rounded-xl border-2 transition-all group ${
                   formData.is_win
-                    ? "border-clean bg-clean/10"
-                    : "border-border hover:border-clean/50"
+                    ? "border-green-500/50 bg-gradient-to-br from-green-950/30 to-black shadow-lg shadow-green-500/10"
+                    : "border-white/10 bg-black/40 hover:border-green-500/30"
                 }`}
               >
-                <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                  <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-clean" />
-                  <span className="font-semibold text-xs sm:text-sm">WIN</span>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
+                    formData.is_win ? "bg-green-500/20" : "bg-white/5"
+                  }`}>
+                    <ArrowUp className={`h-4 w-4 ${formData.is_win ? "text-green-400" : "text-muted-foreground"}`} />
+                  </div>
+                  <span className={`font-bold text-sm ${formData.is_win ? "text-green-400" : "text-muted-foreground"}`}>WIN</span>
                 </div>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Withdraw</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground/60">Withdraw profit</p>
               </button>
             </div>
           </div>
