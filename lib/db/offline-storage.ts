@@ -13,7 +13,9 @@ interface LossTrackerDB extends DBSchema {
     key: string
     value: {
       id: string
-      loss: Loss
+      loss?: Loss
+      data?: any
+      action?: 'create' | 'update' | 'delete'
       timestamp: number
     }
   }
@@ -79,4 +81,39 @@ export async function clearSyncQueue() {
 export async function removeSyncedLoss(syncId: string) {
   const db = await getDB()
   await db.delete('sync_queue', syncId)
+}
+
+export async function markAsSynced(tempId: string, serverId: string) {
+  const db = await getDB()
+  const tx = db.transaction('losses', 'readwrite')
+  
+  // Get the loss with temp ID
+  const loss = await tx.objectStore('losses').get(tempId)
+  
+  if (loss) {
+    // Delete old entry with temp ID
+    await tx.objectStore('losses').delete(tempId)
+    
+    // Add new entry with server ID
+    loss.id = serverId
+    await tx.objectStore('losses').put(loss)
+  }
+  
+  await tx.done
+}
+
+export async function clearSyncQueueItem(queueId: string) {
+  const db = await getDB()
+  await db.delete('sync_queue', queueId)
+}
+
+export async function syncLossesFromServer(serverLosses: Loss[]) {
+  const db = await getDB()
+  const tx = db.transaction('losses', 'readwrite')
+  
+  for (const loss of serverLosses) {
+    await tx.objectStore('losses').put(loss)
+  }
+  
+  await tx.done
 }
