@@ -28,7 +28,7 @@ export interface TypeBreakdown {
 }
 
 export interface AllTypeBreakdown {
-  casino: TypeBreakdown
+  judol: TypeBreakdown
   crypto: TypeBreakdown
 }
 
@@ -96,11 +96,11 @@ export function calculateTypeStats(
 /**
  * Calculate breakdown for all transaction types
  * @param losses - Array of loss/transaction records
- * @returns AllTypeBreakdown with casino and crypto stats
+ * @returns AllTypeBreakdown with judol and crypto stats
  */
 export function calculateTypeBreakdown(losses: Loss[]): AllTypeBreakdown {
   return {
-    casino: calculateTypeStats(losses, "casino"),
+    judol: calculateTypeStats(losses, "judol"),
     crypto: calculateTypeStats(losses, "crypto"),
   }
 }
