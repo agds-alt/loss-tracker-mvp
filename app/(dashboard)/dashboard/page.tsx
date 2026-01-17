@@ -55,9 +55,9 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single() as { data: { username: string } | null }
 
-  // Get top sites rankings
-  const topWithdrawals = await getTopWithdrawals(supabase, user.id, 5)
-  const topDeposits = await getTopDeposits(supabase, user.id, 5)
+  // Get top sites rankings - show all sites
+  const topWithdrawals = await getTopWithdrawals(supabase, user.id, 999)
+  const topDeposits = await getTopDeposits(supabase, user.id, 999)
 
   return (
     <div className="space-y-4 sm:space-y-6 md:space-y-8">
