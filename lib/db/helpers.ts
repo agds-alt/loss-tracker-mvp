@@ -6,7 +6,7 @@ export function insertLoss(
   supabase: any,
   data: {
     user_id: string
-    type: 'casino' | 'crypto'
+    type: 'judol' | 'crypto'
     site_coin_name: string
     amount: number
     date: string
@@ -23,7 +23,7 @@ export function updateLoss(
   supabase: any,
   id: string,
   data: {
-    type: 'casino' | 'crypto'
+    type: 'judol' | 'crypto'
     site_coin_name: string
     amount: number
     date: string
