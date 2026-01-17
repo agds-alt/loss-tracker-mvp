@@ -32,11 +32,11 @@ const lossSchema = z.object({
 export function QuickActions() {
   const router = useRouter()
   const { toast } = useToast()
-  const [judolModalOpen, setJudolModalOpen] = useState(false)
+  const [casinoModalOpen, setCasinoModalOpen] = useState(false)
   const [cryptoModalOpen, setCryptoModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [judolForm, setJudolForm] = useState({
+  const [casinoForm, setCasinoForm] = useState({
     site_coin_name: "",
     amount: "",
     date: new Date().toISOString().split("T")[0],
@@ -52,9 +52,9 @@ export function QuickActions() {
     is_win: false,
   })
 
-  const handleAddLoss = async (type: "judol" | "crypto") => {
+  const handleAddLoss = async (type: "casino" | "crypto") => {
     setLoading(true)
-    const formData = type === "judol" ? judolForm : cryptoForm
+    const formData = type === "casino" ? casinoForm : cryptoForm
 
     try {
       const validated = lossSchema.parse({
@@ -83,15 +83,15 @@ export function QuickActions() {
       })
 
       // Reset form and close modal
-      if (type === "judol") {
-        setJudolForm({
+      if (type === "casino") {
+        setCasinoForm({
           site_coin_name: "",
           amount: "",
           date: new Date().toISOString().split("T")[0],
           notes: "",
           is_win: false,
         })
-        setJudolModalOpen(false)
+        setCasinoModalOpen(false)
       } else {
         setCryptoForm({
           site_coin_name: "",
@@ -132,13 +132,13 @@ export function QuickActions() {
         <CardContent className="p-3 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 md:gap-4">
             <Button
-              variant="judol"
-              onClick={() => setJudolModalOpen(true)}
+              variant="casino"
+              onClick={() => setCasinoModalOpen(true)}
               className="text-xs sm:text-sm h-9 sm:h-10"
             >
               <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Tambah Judol</span>
-              <span className="sm:hidden">Judol</span>
+              <span className="hidden sm:inline">Tambah Casino</span>
+              <span className="sm:hidden">Casino</span>
             </Button>
             <Button
               variant="crypto"
@@ -162,13 +162,13 @@ export function QuickActions() {
         </CardContent>
       </Card>
 
-      {/* Judol Modal */}
-      <Dialog open={judolModalOpen} onOpenChange={setJudolModalOpen}>
+      {/* Casino Modal */}
+      <Dialog open={casinoModalOpen} onOpenChange={setCasinoModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tambah Loss Judol</DialogTitle>
+            <DialogTitle>Tambah Loss Casino</DialogTitle>
             <DialogDescription>
-              Catat loss judol kamu untuk tracking yang lebih baik.
+              Catat loss casino kamu untuk tracking yang lebih baik.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 sm:space-y-4 py-2 sm:py-4">
@@ -178,9 +178,9 @@ export function QuickActions() {
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button
                   type="button"
-                  onClick={() => setJudolForm({ ...judolForm, is_win: false })}
+                  onClick={() => setCasinoForm({ ...casinoForm, is_win: false })}
                   className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
-                    !judolForm.is_win
+                    !casinoForm.is_win
                       ? "border-destructive bg-destructive/10"
                       : "border-border hover:border-destructive/50"
                   }`}
@@ -193,9 +193,9 @@ export function QuickActions() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setJudolForm({ ...judolForm, is_win: true })}
+                  onClick={() => setCasinoForm({ ...casinoForm, is_win: true })}
                   className={`p-2.5 sm:p-4 rounded-lg border-2 transition-all ${
-                    judolForm.is_win
+                    casinoForm.is_win
                       ? "border-clean bg-clean/10"
                       : "border-border hover:border-clean/50"
                   }`}
@@ -210,50 +210,50 @@ export function QuickActions() {
             </div>
 
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-site" className="text-xs sm:text-sm">Nama Situs</Label>
+              <Label htmlFor="casino-site" className="text-xs sm:text-sm">Nama Situs</Label>
               <Input
-                id="judol-site"
+                id="casino-site"
                 placeholder="e.g., Slot88"
-                value={judolForm.site_coin_name}
+                value={casinoForm.site_coin_name}
                 onChange={(e) =>
-                  setJudolForm({ ...judolForm, site_coin_name: e.target.value })
+                  setCasinoForm({ ...casinoForm, site_coin_name: e.target.value })
                 }
                 className="h-9 sm:h-10 text-sm"
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-amount" className="text-xs sm:text-sm">Jumlah (Rp)</Label>
+              <Label htmlFor="casino-amount" className="text-xs sm:text-sm">Jumlah (Rp)</Label>
               <Input
-                id="judol-amount"
+                id="casino-amount"
                 type="number"
                 placeholder="500000"
-                value={judolForm.amount}
+                value={casinoForm.amount}
                 onChange={(e) =>
-                  setJudolForm({ ...judolForm, amount: e.target.value })
+                  setCasinoForm({ ...casinoForm, amount: e.target.value })
                 }
                 className="h-9 sm:h-10 text-sm"
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-date" className="text-xs sm:text-sm">Tanggal</Label>
+              <Label htmlFor="casino-date" className="text-xs sm:text-sm">Tanggal</Label>
               <Input
-                id="judol-date"
+                id="casino-date"
                 type="date"
-                value={judolForm.date}
+                value={casinoForm.date}
                 onChange={(e) =>
-                  setJudolForm({ ...judolForm, date: e.target.value })
+                  setCasinoForm({ ...casinoForm, date: e.target.value })
                 }
                 className="h-9 sm:h-10 text-sm"
               />
             </div>
             <div className="space-y-1.5 sm:space-y-2">
-              <Label htmlFor="judol-notes" className="text-xs sm:text-sm">Catatan (Opsional)</Label>
+              <Label htmlFor="casino-notes" className="text-xs sm:text-sm">Catatan (Opsional)</Label>
               <Textarea
-                id="judol-notes"
+                id="casino-notes"
                 placeholder="Catatan tambahan..."
-                value={judolForm.notes}
+                value={casinoForm.notes}
                 onChange={(e) =>
-                  setJudolForm({ ...judolForm, notes: e.target.value })
+                  setCasinoForm({ ...casinoForm, notes: e.target.value })
                 }
                 rows={2}
                 className="text-sm resize-none"
@@ -263,19 +263,19 @@ export function QuickActions() {
           <DialogFooter className="gap-2">
             <Button
               variant="outline"
-              onClick={() => setJudolModalOpen(false)}
+              onClick={() => setCasinoModalOpen(false)}
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
               Batal
             </Button>
             <Button
-              variant={judolForm.is_win ? "clean" : "judol"}
-              onClick={() => handleAddLoss("judol")}
+              variant={casinoForm.is_win ? "clean" : "casino"}
+              onClick={() => handleAddLoss("casino")}
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
-              {loading ? "Menambahkan..." : (judolForm.is_win ? "Tambah Win 📈" : "Tambah Loss 📉")}
+              {loading ? "Menambahkan..." : (casinoForm.is_win ? "Tambah Win 📈" : "Tambah Loss 📉")}
             </Button>
           </DialogFooter>
         </DialogContent>

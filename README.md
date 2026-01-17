@@ -1,6 +1,6 @@
 # Loss Tracker MVP
 
-A full-stack web application built with Next.js 14, TypeScript, and Supabase to help track gambling (judol) and crypto losses, visualize spending patterns, and build better financial habits.
+A full-stack web application built with Next.js 14, TypeScript, and Supabase to help track gambling (casino) and crypto losses, visualize spending patterns, and build better financial habits.
 
 ## Features
 
@@ -10,32 +10,32 @@ A full-stack web application built with Next.js 14, TypeScript, and Supabase to 
 - ✅ Unique username validation
 - ✅ Login with remember me
 - ✅ Protected routes with middleware
-- ✅ Commitment checkbox: "Saya berkomitmen untuk tobat dari judol"
+- ✅ Commitment checkbox: "Saya berkomitmen untuk tobat dari casino"
 
 ### Dashboard
 - ✅ **Hero Stats Cards**
-  - Total Judol Loss (red theme)
+  - Total Casino Loss (red theme)
   - Total Crypto Loss (orange theme)
   - Clean Days Streak (green theme)
 
 - ✅ **Quick Actions**
-  - Add Judol Loss (modal)
+  - Add Casino Loss (modal)
   - Add Crypto Loss (modal)
   - View Full Report button
 
 - ✅ **Week Summary Chart**
-  - Bar chart comparing judol vs crypto losses (last 7 days)
+  - Bar chart comparing casino vs crypto losses (last 7 days)
   - Built with Recharts
   - Hover tooltips with exact amounts
 
 - ✅ **Motivation Section**
   - Daily rotating motivational quotes
-  - Days since last judol counter
+  - Days since last casino counter
   - Progress visualization
 
 ### My Tracker Page
 - ✅ **Input Form (Sticky)**
-  - Type selector (Judol/Crypto)
+  - Type selector (Casino/Crypto)
   - Site/Coin name input with autocomplete
   - Amount input (Rupiah)
   - Date picker
@@ -44,18 +44,18 @@ A full-stack web application built with Next.js 14, TypeScript, and Supabase to 
 
 - ✅ **Entry List Table**
   - Sortable columns
-  - Color-coded rows (Judol = red tint, Crypto = orange tint)
+  - Color-coded rows (Casino = red tint, Crypto = orange tint)
   - Edit & Delete actions with confirmation
   - Pagination (20 items per page)
   - Search by site/coin name
-  - Filter by type (All/Judol/Crypto)
+  - Filter by type (All/Casino/Crypto)
 
 - ✅ **Reality Check Calculator**
   - "Uang ini bisa DCA Bitcoin X bulan"
   - "Setara X gram emas"
   - "X% dari UMR Jakarta"
   - "Bisa bayar kos X bulan"
-  - Judol vs Crypto comparison alert
+  - Casino vs Crypto comparison alert
 
 - ✅ **Summary Stats**
   - Total entries count
@@ -95,7 +95,7 @@ A full-stack web application built with Next.js 14, TypeScript, and Supabase to 
 ```sql
 - id (uuid, primary key)
 - user_id (uuid, foreign key -> users.id)
-- type (enum: 'judol' | 'crypto')
+- type (enum: 'casino' | 'crypto')
 - site_coin_name (text)
 - amount (numeric)
 - date (date)
@@ -107,9 +107,9 @@ A full-stack web application built with Next.js 14, TypeScript, and Supabase to 
 ```sql
 - id (uuid, primary key)
 - user_id (uuid, foreign key, unique)
-- last_judol_date (date, nullable)
+- last_casino_date (date, nullable)
 - clean_days (integer, default 0)
-- total_judol_loss (numeric, default 0)
+- total_casino_loss (numeric, default 0)
 - total_crypto_loss (numeric, default 0)
 - updated_at (timestamp)
 ```
@@ -173,7 +173,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 1. Click "Sign up sekarang"
 2. Fill in email, username, password
-3. Check "Saya berkomitmen untuk tobat dari judol"
+3. Check "Saya berkomitmen untuk tobat dari casino"
 4. Click "Create Account"
 5. You'll be redirected to the dashboard!
 
@@ -249,7 +249,7 @@ Edit `components/tracker/reality-check.tsx` to customize:
 
 ### Color Scheme
 Edit `tailwind.config.ts` to change:
-- `judol` theme (default: red #ef4444)
+- `casino` theme (default: red #ef4444)
 - `crypto` theme (default: orange #f97316)
 - `clean` theme (default: green #22c55e)
 

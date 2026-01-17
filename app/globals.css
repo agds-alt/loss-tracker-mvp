@@ -27,7 +27,7 @@
     --radius: 0.75rem;
 
     /* Custom colors for gambling tracker */
-    --judol: 350 85% 60%;
+    --casino: 350 85% 60%;
     --crypto: 45 93% 58%;
     --clean: 142 76% 36%;
   }
@@ -75,7 +75,7 @@
   }
 
   /* Neon glow effects */
-  .neon-glow-judol {
+  .neon-glow-casino {
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
   }
 

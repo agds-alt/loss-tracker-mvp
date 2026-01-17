@@ -55,7 +55,7 @@ export function MyRankingCard({ rankings }: MyRankingCardProps) {
 
           {/* Improved Rank */}
           <div className="text-center p-3 rounded-lg bg-muted/50">
-            <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-judol mx-auto mb-1" />
+            <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-casino mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">Improved</p>
             <p className="text-base sm:text-lg font-bold">
               {rankings.improved.rank ? `#${rankings.improved.rank}` : "-"}

@@ -11,14 +11,14 @@ interface RealityCheckProps {
 
 export function RealityCheck({ stats }: RealityCheckProps) {
   // Use NET loss (deposits - withdrawals) for fairer calculation
-  const netJudol = Number(stats?.net_judol || 0)
+  const netCasino = Number(stats?.net_casino || 0)
   const netCrypto = Number(stats?.net_crypto || 0)
-  const totalNetLoss = Math.abs(netJudol) + Math.abs(netCrypto)
+  const totalNetLoss = Math.abs(netCasino) + Math.abs(netCrypto)
 
   // Get total deposits for reference
-  const totalJudolDeposit = Number(stats?.total_judol_loss || 0)
+  const totalCasinoDeposit = Number(stats?.total_casino_loss || 0)
   const totalCryptoDeposit = Number(stats?.total_crypto_loss || 0)
-  const totalJudolWD = Number(stats?.total_judol_win || 0)
+  const totalCasinoWD = Number(stats?.total_casino_win || 0)
   const totalCryptoWD = Number(stats?.total_crypto_win || 0)
 
   if (totalNetLoss === 0) return null
@@ -29,8 +29,8 @@ export function RealityCheck({ stats }: RealityCheckProps) {
   const umrJakartaPercent = ((totalNetLoss / 5_000_000) * 100).toFixed(1) // 5M UMR
   const kosMonths = Math.floor(totalNetLoss / 1_500_000) // @1.5M/month
 
-  const judolVsCryptoPercent =
-    Math.abs(netJudol) > 0 ? (((Math.abs(netJudol) - Math.abs(netCrypto)) / Math.abs(netJudol)) * 100).toFixed(1) : "0"
+  const casinoVsCryptoPercent =
+    Math.abs(netCasino) > 0 ? (((Math.abs(netCasino) - Math.abs(netCrypto)) / Math.abs(netCasino)) * 100).toFixed(1) : "0"
 
   return (
     <Card className="border-2 border-destructive/50 bg-destructive/5">
@@ -91,13 +91,13 @@ export function RealityCheck({ stats }: RealityCheckProps) {
           </div>
         </div>
 
-        {Math.abs(netJudol) > Math.abs(netCrypto) && (
+        {Math.abs(netCasino) > Math.abs(netCrypto) && (
           <div className="mt-6 p-4 bg-destructive/10 rounded-lg border border-destructive/20">
             <p className="text-center font-bold text-destructive text-lg">
-              ⚠️ Judol {judolVsCryptoPercent}% lebih boros dari crypto!
+              ⚠️ Casino {casinoVsCryptoPercent}% lebih boros dari crypto!
             </p>
             <p className="text-center text-sm text-muted-foreground mt-1">
-              Net Loss - Judol: {formatCurrency(Math.abs(netJudol))} vs Crypto: {formatCurrency(Math.abs(netCrypto))}
+              Net Loss - Casino: {formatCurrency(Math.abs(netCasino))} vs Crypto: {formatCurrency(Math.abs(netCrypto))}
             </p>
           </div>
         )}
@@ -106,11 +106,11 @@ export function RealityCheck({ stats }: RealityCheckProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Total Deposits</p>
-              <p className="font-bold text-destructive">{formatCurrency(totalJudolDeposit + totalCryptoDeposit)}</p>
+              <p className="font-bold text-destructive">{formatCurrency(totalCasinoDeposit + totalCryptoDeposit)}</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Total Withdrawals</p>
-              <p className="font-bold text-clean">{formatCurrency(totalJudolWD + totalCryptoWD)}</p>
+              <p className="font-bold text-clean">{formatCurrency(totalCasinoWD + totalCryptoWD)}</p>
             </div>
           </div>
           <div className="text-center pt-2">

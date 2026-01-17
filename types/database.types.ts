@@ -369,39 +369,39 @@ export type Database = {
         Row: {
           clean_days: number
           id: string
-          last_judol_date: string | null
+          last_casino_date: string | null
           net_crypto: number | null
-          net_judol: number | null
+          net_casino: number | null
           total_crypto_loss: number
           total_crypto_win: number | null
-          total_judol_loss: number
-          total_judol_win: number | null
+          total_casino_loss: number
+          total_casino_win: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
           clean_days?: number
           id?: string
-          last_judol_date?: string | null
+          last_casino_date?: string | null
           net_crypto?: number | null
-          net_judol?: number | null
+          net_casino?: number | null
           total_crypto_loss?: number
           total_crypto_win?: number | null
-          total_judol_loss?: number
-          total_judol_win?: number | null
+          total_casino_loss?: number
+          total_casino_win?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
           clean_days?: number
           id?: string
-          last_judol_date?: string | null
+          last_casino_date?: string | null
           net_crypto?: number | null
-          net_judol?: number | null
+          net_casino?: number | null
           total_crypto_loss?: number
           total_crypto_win?: number | null
-          total_judol_loss?: number
-          total_judol_win?: number | null
+          total_casino_loss?: number
+          total_casino_win?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -447,7 +447,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      loss_type: "judol" | "crypto"
+      loss_type: "casino" | "crypto"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -575,7 +575,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      loss_type: ["judol", "crypto"],
+      loss_type: ["casino", "crypto"],
     },
   },
 } as const

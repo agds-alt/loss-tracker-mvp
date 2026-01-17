@@ -12,7 +12,7 @@ import {
 interface LossData {
   id?: string
   user_id: string
-  type: 'judol' | 'crypto'
+  type: 'casino' | 'crypto'
   site_coin_name: string
   amount: number
   date: string

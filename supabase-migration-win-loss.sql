@@ -10,36 +10,36 @@ COMMENT ON COLUMN losses.is_win IS 'TRUE = Win/Withdrawal, FALSE = Loss/Deposit'
 
 -- Step 3: Update user_stats to include win columns
 ALTER TABLE user_stats
-ADD COLUMN IF NOT EXISTS total_judol_win NUMERIC(15, 2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS total_casino_win NUMERIC(15, 2) DEFAULT 0,
 ADD COLUMN IF NOT EXISTS total_crypto_win NUMERIC(15, 2) DEFAULT 0,
-ADD COLUMN IF NOT EXISTS net_judol NUMERIC(15, 2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS net_casino NUMERIC(15, 2) DEFAULT 0,
 ADD COLUMN IF NOT EXISTS net_crypto NUMERIC(15, 2) DEFAULT 0;
 
 -- Step 4: Update the update_user_stats function to calculate wins/losses
 CREATE OR REPLACE FUNCTION update_user_stats()
 RETURNS TRIGGER AS $$
 DECLARE
-  v_total_judol_loss NUMERIC;
+  v_total_casino_loss NUMERIC;
   v_total_crypto_loss NUMERIC;
-  v_total_judol_win NUMERIC;
+  v_total_casino_win NUMERIC;
   v_total_crypto_win NUMERIC;
-  v_last_judol_date DATE;
+  v_last_casino_date DATE;
   v_clean_days INTEGER;
 BEGIN
   -- Calculate totals
   SELECT
-    COALESCE(SUM(CASE WHEN type = 'judol' AND is_win = FALSE THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN type = 'casino' AND is_win = FALSE THEN amount ELSE 0 END), 0),
     COALESCE(SUM(CASE WHEN type = 'crypto' AND is_win = FALSE THEN amount ELSE 0 END), 0),
-    COALESCE(SUM(CASE WHEN type = 'judol' AND is_win = TRUE THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN type = 'casino' AND is_win = TRUE THEN amount ELSE 0 END), 0),
     COALESCE(SUM(CASE WHEN type = 'crypto' AND is_win = TRUE THEN amount ELSE 0 END), 0),
-    MAX(CASE WHEN type = 'judol' AND is_win = FALSE THEN date END)
-  INTO v_total_judol_loss, v_total_crypto_loss, v_total_judol_win, v_total_crypto_win, v_last_judol_date
+    MAX(CASE WHEN type = 'casino' AND is_win = FALSE THEN date END)
+  INTO v_total_casino_loss, v_total_crypto_loss, v_total_casino_win, v_total_crypto_win, v_last_casino_date
   FROM losses
   WHERE user_id = COALESCE(NEW.user_id, OLD.user_id);
 
-  -- Calculate clean days (days since last judol LOSS)
-  IF v_last_judol_date IS NOT NULL THEN
-    v_clean_days := EXTRACT(DAY FROM NOW() - v_last_judol_date)::INTEGER;
+  -- Calculate clean days (days since last casino LOSS)
+  IF v_last_casino_date IS NOT NULL THEN
+    v_clean_days := EXTRACT(DAY FROM NOW() - v_last_casino_date)::INTEGER;
   ELSE
     v_clean_days := 0;
   END IF;
@@ -47,13 +47,13 @@ BEGIN
   -- Update user_stats
   UPDATE user_stats
   SET
-    total_judol_loss = v_total_judol_loss,
+    total_casino_loss = v_total_casino_loss,
     total_crypto_loss = v_total_crypto_loss,
-    total_judol_win = v_total_judol_win,
+    total_casino_win = v_total_casino_win,
     total_crypto_win = v_total_crypto_win,
-    net_judol = v_total_judol_win - v_total_judol_loss,
+    net_casino = v_total_casino_win - v_total_casino_loss,
     net_crypto = v_total_crypto_win - v_total_crypto_loss,
-    last_judol_date = v_last_judol_date,
+    last_casino_date = v_last_casino_date,
     clean_days = v_clean_days,
     updated_at = NOW()
   WHERE user_id = COALESCE(NEW.user_id, OLD.user_id);
@@ -84,9 +84,9 @@ END $$;
 SELECT
   id,
   email,
-  total_judol_loss,
-  total_judol_win,
-  net_judol,
+  total_casino_loss,
+  total_casino_win,
+  net_casino,
   total_crypto_loss,
   total_crypto_win,
   net_crypto

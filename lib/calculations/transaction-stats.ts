@@ -6,7 +6,7 @@
 import { Database } from "@/types/database.types"
 
 type Loss = Database["public"]["Tables"]["losses"]["Row"]
-type TransactionType = "judol" | "crypto"
+type TransactionType = "casino" | "crypto"
 
 export interface TransactionStats {
   totalDeposits: number
@@ -28,7 +28,7 @@ export interface TypeBreakdown {
 }
 
 export interface AllTypeBreakdown {
-  judol: TypeBreakdown
+  casino: TypeBreakdown
   crypto: TypeBreakdown
 }
 
@@ -68,7 +68,7 @@ export function calculateTransactionStats(losses: Loss[]): TransactionStats {
 /**
  * Calculate statistics for a specific transaction type
  * @param losses - Array of loss/transaction records
- * @param type - Transaction type (judol or crypto)
+ * @param type - Transaction type (casino or crypto)
  * @returns TypeBreakdown object
  */
 export function calculateTypeStats(
@@ -96,11 +96,11 @@ export function calculateTypeStats(
 /**
  * Calculate breakdown for all transaction types
  * @param losses - Array of loss/transaction records
- * @returns AllTypeBreakdown with judol and crypto stats
+ * @returns AllTypeBreakdown with casino and crypto stats
  */
 export function calculateTypeBreakdown(losses: Loss[]): AllTypeBreakdown {
   return {
-    judol: calculateTypeStats(losses, "judol"),
+    casino: calculateTypeStats(losses, "casino"),
     crypto: calculateTypeStats(losses, "crypto"),
   }
 }

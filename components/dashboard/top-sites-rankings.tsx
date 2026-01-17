@@ -77,7 +77,7 @@ function RankingsList({ sites, type, onSiteClick }: {
               </p>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full ${
-                  site.type === "judol"
+                  site.type === "casino"
                     ? "bg-red-500/20 text-red-400"
                     : "bg-yellow-500/20 text-yellow-400"
                 }`}

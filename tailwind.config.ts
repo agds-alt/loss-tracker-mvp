@@ -52,7 +52,7 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        judol: {
+        casino: {
           DEFAULT: "#ef4444",
           light: "#fef2f2",
           dark: "#7f1d1d",

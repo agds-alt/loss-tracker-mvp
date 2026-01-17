@@ -3,7 +3,7 @@ import { openDB, DBSchema, IDBPDatabase } from 'idb'
 interface Loss {
   id: string
   user_id: string
-  type: 'judol' | 'crypto'
+  type: 'casino' | 'crypto'
   site_coin_name: string
   amount: number
   date: string

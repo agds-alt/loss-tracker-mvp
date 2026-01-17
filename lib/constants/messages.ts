@@ -4,11 +4,11 @@
  */
 
 export const MOTIVATIONAL_QUOTES = [
-  "Setiap hari tanpa judol adalah kemenangan! 🎯",
+  "Setiap hari tanpa casino adalah kemenangan! 🎯",
   "Kamu lebih kuat dari dorongan untuk bermain! 💪",
   "Finansial sehat dimulai dari keputusan bijak hari ini 💰",
   "Progress, bukan kesempurnaan yang penting! 🌟",
-  "Masa depanmu lebih cerah tanpa judol ☀️",
+  "Masa depanmu lebih cerah tanpa casino ☀️",
   "Setiap hari bersih adalah investasi untuk dirimu 🚀",
   "Kamu layak mendapat kehidupan yang lebih baik! ✨",
   "Tetap fokus pada tujuanmu, bukan gangguan sementara 🎯",
@@ -50,6 +50,6 @@ export const LABEL_TEXT = {
   WIN: "WIN",
   LOSS: "LOSS",
   WITHDRAW: "Withdraw",
-  JUDOL: "Judol",
+  JUDOL: "Casino",
   CRYPTO: "Crypto",
 } as const

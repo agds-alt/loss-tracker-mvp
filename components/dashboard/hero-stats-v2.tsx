@@ -10,9 +10,9 @@ interface HeroStatsProps {
 }
 
 export function HeroStats({ stats }: HeroStatsProps) {
-  const judolDeposit = Number(stats?.total_judol_loss || 0)
-  const judolWD = Number(stats?.total_judol_win || 0)
-  const netJudol = Number(stats?.net_judol || 0)
+  const casinoDeposit = Number(stats?.total_casino_loss || 0)
+  const casinoWD = Number(stats?.total_casino_win || 0)
+  const netCasino = Number(stats?.net_casino || 0)
 
   const cryptoDeposit = Number(stats?.total_crypto_loss || 0)
   const cryptoWD = Number(stats?.total_crypto_win || 0)
@@ -22,13 +22,13 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      {/* Judol Card */}
-      <Card className="border-l-4 border-l-judol">
+      {/* Casino Card */}
+      <Card className="border-l-4 border-l-casino">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                Judol Activity
+                Casino Activity
               </p>
               <h3 className="text-2xl font-bold mt-1">🎰</h3>
             </div>
@@ -41,7 +41,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-muted-foreground">Deposit:</span>
               </div>
               <span className="font-semibold text-destructive">
-                {formatCurrency(judolDeposit)}
+                {formatCurrency(casinoDeposit)}
               </span>
             </div>
 
@@ -51,7 +51,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-muted-foreground">WD:</span>
               </div>
               <span className="font-semibold text-clean">
-                {formatCurrency(judolWD)}
+                {formatCurrency(casinoWD)}
               </span>
             </div>
 
@@ -59,9 +59,9 @@ export function HeroStats({ stats }: HeroStatsProps) {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Net Result:</span>
                 <span className={`text-lg font-bold ${
-                  netJudol >= 0 ? 'text-clean' : 'text-destructive'
+                  netCasino >= 0 ? 'text-clean' : 'text-destructive'
                 }`}>
-                  {netJudol >= 0 ? '+' : ''}{formatCurrency(netJudol)}
+                  {netCasino >= 0 ? '+' : ''}{formatCurrency(netCasino)}
                 </span>
               </div>
             </div>
@@ -128,7 +128,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 {cleanDays}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                days without judol
+                days without casino
               </p>
             </div>
             <div className="h-16 w-16 rounded-full bg-clean/10 flex items-center justify-center">

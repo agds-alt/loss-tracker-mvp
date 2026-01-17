@@ -1,7 +1,7 @@
 This is a placeholder. To generate actual PWA icons:
 
 1. Create a 512x512 PNG logo with:
-   - Red/orange color scheme (matching judol/crypto theme)
+   - Red/orange color scheme (matching casino/crypto theme)
    - Simple icon (maybe a chart or warning symbol)
    - Transparent background
 

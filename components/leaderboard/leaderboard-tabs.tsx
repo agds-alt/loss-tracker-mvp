@@ -34,7 +34,7 @@ export function LeaderboardTabs() {
           </TabsTrigger>
           <TabsTrigger
             value="improved"
-            className="text-xs sm:text-sm py-2 sm:py-2.5 data-[state=active]:bg-judol/20 data-[state=active]:text-judol"
+            className="text-xs sm:text-sm py-2 sm:py-2.5 data-[state=active]:bg-casino/20 data-[state=active]:text-casino"
           >
             <span className="hidden sm:inline">📈 Improved</span>
             <span className="sm:hidden">📈 +</span>

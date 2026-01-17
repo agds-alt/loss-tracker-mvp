@@ -38,7 +38,7 @@ export function PnLCard({ losses, username }: PnLCardProps) {
     uniqueSites,
   } = stats
 
-  const { judol, crypto } = typeBreakdown
+  const { casino, crypto } = typeBreakdown
 
   const handleDownload = async () => {
     if (!cardRef.current || isDownloading) return
@@ -181,7 +181,7 @@ export function PnLCard({ losses, username }: PnLCardProps) {
           <div className="space-y-2 sm:space-y-3">
             <h4 className="text-sm sm:text-lg md:text-xl font-semibold">Rincian</h4>
 
-            {/* Judol */}
+            {/* Casino */}
             <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2.5 sm:p-4 md:p-5 border border-white/20">
               <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <div className="flex items-center gap-1.5 sm:gap-2">
@@ -190,21 +190,21 @@ export function PnLCard({ losses, username }: PnLCardProps) {
                 </div>
                 <span
                   className={`text-sm sm:text-lg md:text-xl font-bold ${
-                    judol.isProfitable ? "text-green-300" : "text-red-300"
+                    casino.isProfitable ? "text-green-300" : "text-red-300"
                   }`}
                 >
-                  {judol.isProfitable ? "+" : "-"}
-                  {formatCurrency(Math.abs(judol.netPnL))}
+                  {casino.isProfitable ? "+" : "-"}
+                  {formatCurrency(Math.abs(casino.netPnL))}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs md:text-sm">
                 <div>
                   <p className="text-white/70">{LABEL_TEXT.DEPOSIT}</p>
-                  <p className="font-semibold">{formatCurrency(judol.deposits)}</p>
+                  <p className="font-semibold">{formatCurrency(casino.deposits)}</p>
                 </div>
                 <div>
                   <p className="text-white/70">{LABEL_TEXT.WITHDRAWAL}</p>
-                  <p className="font-semibold">{formatCurrency(judol.withdrawals)}</p>
+                  <p className="font-semibold">{formatCurrency(casino.withdrawals)}</p>
                 </div>
               </div>
             </div>

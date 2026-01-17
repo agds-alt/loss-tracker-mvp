@@ -10,9 +10,9 @@ interface HeroStatsProps {
 }
 
 export function HeroStats({ stats }: HeroStatsProps) {
-  const judolDeposit = Number(stats?.total_judol_loss || 0)
-  const judolWD = Number(stats?.total_judol_win || 0)
-  const netJudol = Number(stats?.net_judol || 0)
+  const casinoDeposit = Number(stats?.total_casino_loss || 0)
+  const casinoWD = Number(stats?.total_casino_win || 0)
+  const netCasino = Number(stats?.net_casino || 0)
 
   const cryptoDeposit = Number(stats?.total_crypto_loss || 0)
   const cryptoWD = Number(stats?.total_crypto_win || 0)
@@ -22,7 +22,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-      {/* Judol Card */}
+      {/* Casino Card */}
       <Card className="border border-red-500/20 bg-gradient-to-br from-red-950/20 to-black hover:border-red-500/40 transition-all duration-300 overflow-hidden relative group">
         <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardContent className="p-4 sm:p-5 lg:p-6 relative z-10">
@@ -32,7 +32,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-2xl">🎰</span>
               </div>
               <div>
-                <p className="text-xs font-medium text-red-400/80 uppercase tracking-wider">Judol</p>
+                <p className="text-xs font-medium text-red-400/80 uppercase tracking-wider">Casino</p>
                 <p className="text-sm text-muted-foreground">Activity</p>
               </div>
             </div>
@@ -46,7 +46,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-xs text-muted-foreground">Deposit</span>
               </div>
               <span className="font-bold text-sm text-red-400">
-                {formatCurrency(judolDeposit)}
+                {formatCurrency(casinoDeposit)}
               </span>
             </div>
 
@@ -56,7 +56,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-xs text-muted-foreground">Withdraw</span>
               </div>
               <span className="font-bold text-sm text-green-400">
-                {formatCurrency(judolWD)}
+                {formatCurrency(casinoWD)}
               </span>
             </div>
 
@@ -64,9 +64,9 @@ export function HeroStats({ stats }: HeroStatsProps) {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-muted-foreground">Net P&L</span>
                 <span className={`text-lg font-bold ${
-                  netJudol >= 0 ? 'text-green-400' : 'text-red-400'
+                  netCasino >= 0 ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {netJudol >= 0 ? '+' : ''}{formatCurrency(netJudol)}
+                  {netCasino >= 0 ? '+' : ''}{formatCurrency(netCasino)}
                 </span>
               </div>
             </div>
@@ -148,7 +148,7 @@ export function HeroStats({ stats }: HeroStatsProps) {
                 <span className="text-sm text-muted-foreground mb-2">days</span>
               </div>
               <p className="text-xs text-green-400/60 mt-2">
-                Tanpa judol - Keep it up! 🔥
+                Tanpa casino - Keep it up! 🔥
               </p>
             </div>
             <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-green-500/10 to-green-500/5 flex items-center justify-center border border-green-500/20 flex-shrink-0">

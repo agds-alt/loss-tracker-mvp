@@ -40,7 +40,7 @@ export function RecentTransactions({ losses }: RecentTransactionsProps) {
         <div className="space-y-3">
           {recentLosses.map((loss) => {
             const isWin = loss.is_win
-            const typeColor = loss.type === "judol" ? "judol" : "crypto"
+            const typeColor = loss.type === "casino" ? "casino" : "crypto"
 
             return (
               <div
@@ -71,10 +71,10 @@ export function RecentTransactions({ losses }: RecentTransactionsProps) {
                       <span
                         className={cn(
                           "text-xs px-2 py-0.5 rounded-full font-medium",
-                          loss.type === "judol" ? "bg-judol/20 text-judol" : "bg-crypto/20 text-crypto"
+                          loss.type === "casino" ? "bg-casino/20 text-casino" : "bg-crypto/20 text-crypto"
                         )}
                       >
-                        {loss.type === "judol" ? "Judol" : "Crypto"}
+                        {loss.type === "casino" ? "Casino" : "Crypto"}
                       </span>
                       <span
                         className={cn(

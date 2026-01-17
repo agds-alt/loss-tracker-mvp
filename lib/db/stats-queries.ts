@@ -4,7 +4,7 @@
 
 export interface SiteStats {
   site_coin_name: string
-  type: "judol" | "crypto"
+  type: "casino" | "crypto"
   total_amount: number
   count: number
   highest_single: number
@@ -45,7 +45,7 @@ export async function getTopWithdrawals(
     } else {
       siteMap.set(key, {
         site_coin_name: loss.site_coin_name,
-        type: loss.type as "judol" | "crypto",
+        type: loss.type as "casino" | "crypto",
         total_amount: Number(loss.amount),
         count: 1,
         highest_single: Number(loss.amount),
@@ -96,7 +96,7 @@ export async function getTopDeposits(
     } else {
       siteMap.set(key, {
         site_coin_name: loss.site_coin_name,
-        type: loss.type as "judol" | "crypto",
+        type: loss.type as "casino" | "crypto",
         total_amount: Number(loss.amount),
         count: 1,
         highest_single: Number(loss.amount),

@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create loss_type enum
-CREATE TYPE loss_type AS ENUM ('judol', 'crypto');
+CREATE TYPE loss_type AS ENUM ('casino', 'crypto');
 
 -- Create users table
 CREATE TABLE users (
@@ -29,9 +29,9 @@ CREATE TABLE losses (
 CREATE TABLE user_stats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE NOT NULL,
-  last_judol_date DATE,
+  last_casino_date DATE,
   clean_days INTEGER DEFAULT 0 NOT NULL,
-  total_judol_loss NUMERIC(15, 2) DEFAULT 0 NOT NULL,
+  total_casino_loss NUMERIC(15, 2) DEFAULT 0 NOT NULL,
   total_crypto_loss NUMERIC(15, 2) DEFAULT 0 NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
@@ -113,23 +113,23 @@ CREATE TRIGGER on_auth_user_created
 CREATE OR REPLACE FUNCTION update_user_stats()
 RETURNS TRIGGER AS $$
 DECLARE
-  v_total_judol NUMERIC;
+  v_total_casino NUMERIC;
   v_total_crypto NUMERIC;
-  v_last_judol_date DATE;
+  v_last_casino_date DATE;
   v_clean_days INTEGER;
 BEGIN
   -- Calculate totals
   SELECT
-    COALESCE(SUM(CASE WHEN type = 'judol' THEN amount ELSE 0 END), 0),
+    COALESCE(SUM(CASE WHEN type = 'casino' THEN amount ELSE 0 END), 0),
     COALESCE(SUM(CASE WHEN type = 'crypto' THEN amount ELSE 0 END), 0),
-    MAX(CASE WHEN type = 'judol' THEN date END)
-  INTO v_total_judol, v_total_crypto, v_last_judol_date
+    MAX(CASE WHEN type = 'casino' THEN date END)
+  INTO v_total_casino, v_total_crypto, v_last_casino_date
   FROM losses
   WHERE user_id = COALESCE(NEW.user_id, OLD.user_id);
 
   -- Calculate clean days
-  IF v_last_judol_date IS NOT NULL THEN
-    v_clean_days := EXTRACT(DAY FROM NOW() - v_last_judol_date)::INTEGER;
+  IF v_last_casino_date IS NOT NULL THEN
+    v_clean_days := EXTRACT(DAY FROM NOW() - v_last_casino_date)::INTEGER;
   ELSE
     v_clean_days := 0;
   END IF;
@@ -137,9 +137,9 @@ BEGIN
   -- Update user_stats
   UPDATE user_stats
   SET
-    total_judol_loss = v_total_judol,
+    total_casino_loss = v_total_casino,
     total_crypto_loss = v_total_crypto,
-    last_judol_date = v_last_judol_date,
+    last_casino_date = v_last_casino_date,
     clean_days = v_clean_days,
     updated_at = NOW()
   WHERE user_id = COALESCE(NEW.user_id, OLD.user_id);

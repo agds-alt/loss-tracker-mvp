@@ -60,10 +60,10 @@ function TransactionItem({ loss }: { loss: Loss }) {
           <span
             className={cn(
               "text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-medium whitespace-nowrap w-fit",
-              loss.type === "judol" ? "bg-judol/20 text-judol" : "bg-crypto/20 text-crypto"
+              loss.type === "casino" ? "bg-casino/20 text-casino" : "bg-crypto/20 text-crypto"
             )}
           >
-            {loss.type === "judol" ? "Judol" : "Crypto"}
+            {loss.type === "casino" ? "Casino" : "Crypto"}
           </span>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">

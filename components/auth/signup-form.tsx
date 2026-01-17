@@ -24,7 +24,7 @@ const signupSchema = z.object({
     .regex(/[A-Z]/, "Password harus mengandung minimal 1 huruf besar")
     .regex(/[0-9]/, "Password harus mengandung minimal 1 angka"),
   commitment: z.boolean().refine((val) => val === true, {
-    message: "Kamu harus berkomitmen untuk tobat dari judol!",
+    message: "Kamu harus berkomitmen untuk tobat dari casino!",
   }),
 })
 
@@ -159,7 +159,7 @@ export function SignupForm() {
             htmlFor="commitment"
             className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Saya berkomitmen untuk tobat dari judol
+            Saya berkomitmen untuk tobat dari casino
           </Label>
           {errors.commitment && (
             <p className="text-sm text-destructive">{errors.commitment}</p>

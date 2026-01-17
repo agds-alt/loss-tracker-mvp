@@ -15,7 +15,7 @@ import { insertLoss } from "@/lib/db/helpers"
 import { ArrowUp, ArrowDown } from "lucide-react"
 
 const transactionSchema = z.object({
-  type: z.enum(["judol", "crypto"]),
+  type: z.enum(["casino", "crypto"]),
   is_win: z.boolean(),
   site_coin_name: z.string().min(1, "Site/Coin name harus diisi"),
   amount: z.number().positive("Amount harus lebih dari 0"),
@@ -28,7 +28,7 @@ export function InputForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    type: "judol" as "judol" | "crypto",
+    type: "casino" as "casino" | "crypto",
     is_win: false,
     site_coin_name: "",
     amount: "",
@@ -69,7 +69,7 @@ export function InputForm() {
 
       // Reset form
       setFormData({
-        type: "judol",
+        type: "casino",
         is_win: false,
         site_coin_name: "",
         amount: "",
@@ -116,15 +116,15 @@ export function InputForm() {
             <Label className="text-xs sm:text-sm">Type</Label>
             <RadioGroup
               value={formData.type}
-              onValueChange={(value: "judol" | "crypto") =>
+              onValueChange={(value: "casino" | "crypto") =>
                 setFormData({ ...formData, type: value })
               }
               className="flex gap-3 sm:gap-4"
             >
               <div className="flex items-center space-x-1.5 sm:space-x-2">
-                <RadioGroupItem value="judol" id="judol" />
-                <Label htmlFor="judol" className="cursor-pointer font-normal text-xs sm:text-sm">
-                  Judol
+                <RadioGroupItem value="casino" id="casino" />
+                <Label htmlFor="casino" className="cursor-pointer font-normal text-xs sm:text-sm">
+                  Casino
                 </Label>
               </div>
               <div className="flex items-center space-x-1.5 sm:space-x-2">
@@ -184,12 +184,12 @@ export function InputForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
             <div className="space-y-1.5 sm:space-y-2">
               <Label htmlFor="site_coin_name" className="text-xs sm:text-sm">
-                {formData.type === "judol" ? "Site Name" : "Coin Name"}
+                {formData.type === "casino" ? "Site Name" : "Coin Name"}
               </Label>
               <Input
                 id="site_coin_name"
                 placeholder={
-                  formData.type === "judol"
+                  formData.type === "casino"
                     ? "e.g., Slot88"
                     : "e.g., BTC"
                 }
@@ -255,7 +255,7 @@ export function InputForm() {
             type="submit"
             className="w-full"
             disabled={loading}
-            variant={formData.is_win ? "clean" : (formData.type === "judol" ? "judol" : "crypto")}
+            variant={formData.is_win ? "clean" : (formData.type === "casino" ? "casino" : "crypto")}
           >
             {loading ? "Adding..." : (formData.is_win ? "Add Win 📈" : "Add Loss 📉")}
           </Button>

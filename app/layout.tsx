@@ -8,7 +8,7 @@ import { InstallPrompt } from "@/components/pwa/install-prompt"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Loss Tracker - Tobat dari Judol",
+  title: "Loss Tracker - Tobat dari Casino",
   description: "Track your gambling and crypto losses to build better financial habits",
   manifest: "/manifest.json",
   appleWebApp: {

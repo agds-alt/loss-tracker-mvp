@@ -40,7 +40,7 @@ interface EntryListProps {
 const ITEMS_PER_PAGE = 20
 
 const lossSchema = z.object({
-  type: z.enum(["judol", "crypto"]),
+  type: z.enum(["casino", "crypto"]),
   site_coin_name: z.string().min(1, "Site/Coin name harus diisi"),
   amount: z.number().positive("Amount harus lebih dari 0"),
   date: z.string().min(1, "Tanggal harus diisi"),
@@ -53,14 +53,14 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
   const { toast } = useToast()
   const losses = initialLosses
   const [currentPage, setCurrentPage] = useState(1)
-  const [filter, setFilter] = useState<"all" | "judol" | "crypto">("all")
+  const [filter, setFilter] = useState<"all" | "casino" | "crypto">("all")
   const [search, setSearch] = useState("")
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedLoss, setSelectedLoss] = useState<Loss | null>(null)
   const [loading, setLoading] = useState(false)
   const [editForm, setEditForm] = useState({
-    type: "judol" as "judol" | "crypto",
+    type: "casino" as "casino" | "crypto",
     site_coin_name: "",
     amount: "",
     date: "",
@@ -213,14 +213,14 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                 Semua
               </Button>
               <Button
-                variant={filter === "judol" ? "judol" : "outline"}
+                variant={filter === "casino" ? "casino" : "outline"}
                 onClick={() => {
-                  setFilter("judol")
+                  setFilter("casino")
                   setCurrentPage(1)
                 }}
                 className="h-9 sm:h-10 text-xs sm:text-sm px-3 sm:px-4"
               >
-                Judol
+                Casino
               </Button>
               <Button
                 variant={filter === "crypto" ? "crypto" : "outline"}
@@ -262,7 +262,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                       key={loss.id}
                       className={cn(
                         "border-b hover:bg-accent/50 transition-colors",
-                        loss.type === "judol" ? "bg-judol/5" : "bg-crypto/5"
+                        loss.type === "casino" ? "bg-casino/5" : "bg-crypto/5"
                       )}
                     >
                       <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-xs sm:text-sm whitespace-nowrap">
@@ -272,12 +272,12 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                         <span
                           className={cn(
                             "text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap",
-                            loss.type === "judol"
-                              ? "bg-judol/20 text-judol"
+                            loss.type === "casino"
+                              ? "bg-casino/20 text-casino"
                               : "bg-crypto/20 text-crypto"
                           )}
                         >
-                          {loss.type === "judol" ? "Judol" : "Crypto"}
+                          {loss.type === "casino" ? "Casino" : "Crypto"}
                         </span>
                       </td>
                       <td className="py-2 sm:py-3 px-1.5 sm:px-2 font-medium text-xs sm:text-sm">{loss.site_coin_name}</td>
@@ -398,15 +398,15 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
               <Label>Tipe</Label>
               <RadioGroup
                 value={editForm.type}
-                onValueChange={(value: "judol" | "crypto") =>
+                onValueChange={(value: "casino" | "crypto") =>
                   setEditForm({ ...editForm, type: value })
                 }
                 className="flex gap-4"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="judol" id="edit-judol" />
-                  <Label htmlFor="edit-judol" className="cursor-pointer font-normal">
-                    Judol
+                  <RadioGroupItem value="casino" id="edit-casino" />
+                  <Label htmlFor="edit-casino" className="cursor-pointer font-normal">
+                    Casino
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">

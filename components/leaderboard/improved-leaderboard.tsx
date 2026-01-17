@@ -134,8 +134,8 @@ export function ImprovedLeaderboard() {
 
                     {/* Avatar */}
                     <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-                      <div className="h-full w-full rounded-full bg-judol/10 flex items-center justify-center">
-                        <span className="text-sm sm:text-base font-semibold text-judol">
+                      <div className="h-full w-full rounded-full bg-casino/10 flex items-center justify-center">
+                        <span className="text-sm sm:text-base font-semibold text-casino">
                           {user.username[0]?.toUpperCase() || "U"}
                         </span>
                       </div>

@@ -10,7 +10,7 @@ export const UI_CONSTANTS = {
     LEADERBOARD_LIMIT: 10,
   },
   COLORS: {
-    JUDOL: "judol",
+    CASINO: "casino",
     CRYPTO: "crypto",
     CLEAN: "clean",
     DESTRUCTIVE: "destructive",
@@ -32,14 +32,14 @@ export const UI_CONSTANTS = {
  * Pre-defined to avoid dynamic class generation issues
  */
 export const TYPE_COLOR_STYLES = {
-  judol: {
-    border: "border-judol",
-    borderLight: "border-judol/20",
-    bg: "bg-judol",
-    bgLight: "bg-judol/5",
-    bgMedium: "bg-judol/10",
-    text: "text-judol",
-    textLight: "text-judol/80",
+  casino: {
+    border: "border-casino",
+    borderLight: "border-casino/20",
+    bg: "bg-casino",
+    bgLight: "bg-casino/5",
+    bgMedium: "bg-casino/10",
+    text: "text-casino",
+    textLight: "text-casino/80",
   },
   crypto: {
     border: "border-crypto",

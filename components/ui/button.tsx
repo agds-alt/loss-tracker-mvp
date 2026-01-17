@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        judol: "bg-judol text-white hover:bg-judol/90",
+        casino: "bg-casino text-white hover:bg-casino/90",
         crypto: "bg-crypto text-white hover:bg-crypto/90",
         clean: "bg-clean text-white hover:bg-clean/90",
       },

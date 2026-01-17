@@ -1,5 +1,5 @@
 {
-  "name": "Loss Tracker - Track Judol & Crypto Losses",
+  "name": "Loss Tracker - Track Casino & Crypto Losses",
   "short_name": "Loss Tracker",
   "description": "Track your gambling and crypto losses to stay accountable and build better habits",
   "start_url": "/",
@@ -32,10 +32,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Add Judol Loss",
-      "short_name": "Add Judol",
-      "description": "Quickly add a judol loss entry",
-      "url": "/tracker?type=judol",
+      "name": "Add Casino Loss",
+      "short_name": "Add Casino",
+      "description": "Quickly add a casino loss entry",
+      "url": "/tracker?type=casino",
       "icons": [
         {
           "src": "/icon-192x192.png",

@@ -23,14 +23,14 @@ export function formatNumber(num: number): string {
 }
 
 /**
- * Calculate clean days (days without judol)
- * @param lastJudolDate - Last date of judol activity
+ * Calculate clean days (days without casino)
+ * @param lastCasinoDate - Last date of casino activity
  * @returns Number of clean days
  */
-export function calculateCleanDays(lastJudolDate: Date | null): number {
-  if (!lastJudolDate) return 0
+export function calculateCleanDays(lastCasinoDate: Date | null): number {
+  if (!lastCasinoDate) return 0
   const now = new Date()
-  const diffTime = Math.abs(now.getTime() - lastJudolDate.getTime())
+  const diffTime = Math.abs(now.getTime() - lastCasinoDate.getTime())
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   return diffDays
 }
