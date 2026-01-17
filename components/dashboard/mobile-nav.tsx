@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Menu, Home, TrendingDown, Settings, LogOut } from "lucide-react"
+import { Menu, Home, TrendingDown, Settings, LogOut, BarChart3, Trophy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
@@ -25,6 +25,8 @@ interface MobileNavProps {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "My Tracker", href: "/tracker", icon: TrendingDown },
+  { name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { name: "My Stats", href: "/stats", icon: Trophy },
   { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
 

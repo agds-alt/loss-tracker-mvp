@@ -1,11 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { HeroStats } from "@/components/dashboard/hero-stats"
-import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
-import { MotivationSection } from "@/components/dashboard/motivation-section"
 import { RecentTransactions } from "@/components/dashboard/recent-transactions"
-import { PnLCard } from "@/components/dashboard/pnl-card"
-import { TopSitesRankings } from "@/components/dashboard/top-sites-rankings"
-import { getTopWithdrawals, getTopDeposits } from "@/lib/db/stats-queries"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,42 +17,12 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .single()
 
-  // Get losses from last 7 days for chart
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
-  const { data: recentLosses } = await supabase
-    .from("losses")
-    .select("*")
-    .eq("user_id", user.id)
-    .gte("date", sevenDaysAgo.toISOString().split("T")[0])
-    .order("date", { ascending: true })
-
-  // Get all recent losses for transactions list (last 10)
+  // Get all recent losses for transactions list
   const { data: allLosses } = await supabase
     .from("losses")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
-    .limit(10)
-
-  // Get all losses for PnL card
-  const { data: allLossesForPnL } = await supabase
-    .from("losses")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-
-  // Get user profile for username
-  const { data: userProfile } = await supabase
-    .from("users")
-    .select("username")
-    .eq("id", user.id)
-    .single() as { data: { username: string } | null }
-
-  // Get top sites rankings - show all sites
-  const topWithdrawals = await getTopWithdrawals(supabase, user.id, 999)
-  const topDeposits = await getTopDeposits(supabase, user.id, 999)
 
   return (
     <div className="space-y-4 sm:space-y-6 md:space-y-8">
@@ -70,18 +35,7 @@ export default async function DashboardPage() {
 
       <HeroStats stats={stats} />
 
-      <TopSitesRankings
-        topWithdrawals={topWithdrawals}
-        topDeposits={topDeposits}
-      />
-
-      <WeekSummaryChart losses={recentLosses || []} />
-
-      <PnLCard losses={allLossesForPnL || []} username={userProfile?.username || "User"} />
-
       <RecentTransactions losses={allLosses || []} />
-
-      <MotivationSection stats={stats} />
     </div>
   )
 }
