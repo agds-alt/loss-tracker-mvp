@@ -1,16 +1,33 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import { formatCurrency } from "@/lib/utils"
-import { Trophy, TrendingUp, TrendingDown, Medal, Award } from "lucide-react"
+import { Trophy, TrendingUp, TrendingDown, Medal, Award, ChevronRight } from "lucide-react"
 import { SiteStats } from "@/lib/db/stats-queries"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface TopSitesRankingsProps {
   topWithdrawals: SiteStats[]
   topDeposits: SiteStats[]
 }
 
-export function TopSitesRankings({ topWithdrawals, topDeposits }: TopSitesRankingsProps) {
+function RankingsList({ sites, type }: { sites: SiteStats[], type: "withdrawal" | "deposit" }) {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -33,129 +50,190 @@ export function TopSitesRankings({ topWithdrawals, topDeposits }: TopSitesRankin
     return colors[rank as keyof typeof colors] || "bg-black/40 border-white/10"
   }
 
+  const textColor = type === "withdrawal" ? "text-green-400" : "text-red-400"
+
+  return (
+    <div className="space-y-2">
+      {sites.map((site, index) => (
+        <div
+          key={site.site_coin_name}
+          className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] ${getRankBadge(
+            index + 1
+          )}`}
+        >
+          <div className="flex items-center justify-center w-8">
+            {getRankIcon(index + 1)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-sm truncate">
+                {site.site_coin_name}
+              </p>
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-full ${
+                  site.type === "judol"
+                    ? "bg-red-500/20 text-red-400"
+                    : "bg-yellow-500/20 text-yellow-400"
+                }`}
+              >
+                {site.type}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {site.count}x {type === "withdrawal" ? "WD" : "deposit"} · Highest: {formatCurrency(site.highest_single)}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className={`font-bold text-sm ${textColor}`}>
+              {formatCurrency(site.total_amount)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function RankingCard({
+  title,
+  subtitle,
+  sites,
+  type,
+  icon: Icon,
+  borderColor,
+  bgGradient,
+  iconBg
+}: {
+  title: string
+  subtitle: string
+  sites: SiteStats[]
+  type: "withdrawal" | "deposit"
+  icon: any
+  borderColor: string
+  bgGradient: string
+  iconBg: string
+}) {
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const [open, setOpen] = useState(false)
+
+  const topThree = sites.slice(0, 3)
+  const hasMore = sites.length > 3
+
+  const content = (
+    <>
+      <CardHeader className="pb-3 border-b border-opacity-10">
+        <div className="flex items-center gap-3">
+          <div className={`h-10 w-10 rounded-xl ${iconBg} flex items-center justify-center border border-opacity-20`}>
+            <Icon className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <CardTitle className="text-lg">{title}</CardTitle>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
+          </div>
+          {sites.length > 0 && (
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">{sites.length} sites</p>
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4">
+        {sites.length === 0 ? (
+          <p className="text-center text-muted-foreground py-8 text-sm">
+            Belum ada {type === "withdrawal" ? "withdrawal 💸" : "deposit 💰"}
+          </p>
+        ) : (
+          <>
+            <RankingsList sites={topThree} type={type} />
+
+            {hasMore && (
+              <div className="mt-3">
+                {isDesktop ? (
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full group"
+                      >
+                        <span>View All {sites.length} Sites</span>
+                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-3">
+                          <Icon className="h-6 w-6" />
+                          {title}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <RankingsList sites={sites} type={type} />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Drawer open={open} onOpenChange={setOpen}>
+                    <DrawerTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full group"
+                      >
+                        <span>View All {sites.length} Sites</span>
+                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </DrawerTrigger>
+                    <DrawerContent className="max-h-[85vh]">
+                      <DrawerHeader>
+                        <DrawerTitle className="flex items-center gap-3">
+                          <Icon className="h-6 w-6" />
+                          {title}
+                        </DrawerTitle>
+                      </DrawerHeader>
+                      <div className="p-4 overflow-y-auto">
+                        <RankingsList sites={sites} type={type} />
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </CardContent>
+    </>
+  )
+
+  return (
+    <Card className={`border ${borderColor} ${bgGradient}`}>
+      {content}
+    </Card>
+  )
+}
+
+export function TopSitesRankings({ topWithdrawals, topDeposits }: TopSitesRankingsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* Top Withdrawals */}
-      <Card className="border border-green-500/20 bg-gradient-to-br from-green-950/10 to-black">
-        <CardHeader className="pb-3 border-b border-green-500/10">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
-              <TrendingUp className="h-5 w-5 text-green-400" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Top Withdrawals</CardTitle>
-              <p className="text-xs text-muted-foreground">Situs dengan WD terbesar</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-4">
-          {topWithdrawals.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8 text-sm">
-              Belum ada withdrawal 💸
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {topWithdrawals.map((site, index) => (
-                <div
-                  key={site.site_coin_name}
-                  className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] ${getRankBadge(
-                    index + 1
-                  )}`}
-                >
-                  <div className="flex items-center justify-center w-8">
-                    {getRankIcon(index + 1)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-sm truncate">
-                        {site.site_coin_name}
-                      </p>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full ${
-                          site.type === "judol"
-                            ? "bg-red-500/20 text-red-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                        }`}
-                      >
-                        {site.type}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {site.count}x WD · Highest: {formatCurrency(site.highest_single)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-green-400">
-                      {formatCurrency(site.total_amount)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <RankingCard
+        title="Top Withdrawals"
+        subtitle="Situs dengan WD terbesar"
+        sites={topWithdrawals}
+        type="withdrawal"
+        icon={TrendingUp}
+        borderColor="border-green-500/20"
+        bgGradient="bg-gradient-to-br from-green-950/10 to-black"
+        iconBg="bg-green-500/10 border-green-500/20 text-green-400"
+      />
 
-      {/* Top Deposits */}
-      <Card className="border border-red-500/20 bg-gradient-to-br from-red-950/10 to-black">
-        <CardHeader className="pb-3 border-b border-red-500/10">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
-              <TrendingDown className="h-5 w-5 text-red-400" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Top Deposits</CardTitle>
-              <p className="text-xs text-muted-foreground">Situs dengan deposit terbesar</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-4">
-          {topDeposits.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8 text-sm">
-              Belum ada deposit 💰
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {topDeposits.map((site, index) => (
-                <div
-                  key={site.site_coin_name}
-                  className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] ${getRankBadge(
-                    index + 1
-                  )}`}
-                >
-                  <div className="flex items-center justify-center w-8">
-                    {getRankIcon(index + 1)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-sm truncate">
-                        {site.site_coin_name}
-                      </p>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full ${
-                          site.type === "judol"
-                            ? "bg-red-500/20 text-red-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                        }`}
-                      >
-                        {site.type}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {site.count}x deposit · Highest: {formatCurrency(site.highest_single)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-red-400">
-                      {formatCurrency(site.total_amount)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <RankingCard
+        title="Top Deposits"
+        subtitle="Situs dengan deposit terbesar"
+        sites={topDeposits}
+        type="deposit"
+        icon={TrendingDown}
+        borderColor="border-red-500/20"
+        bgGradient="bg-gradient-to-br from-red-950/10 to-black"
+        iconBg="bg-red-500/10 border-red-500/20 text-red-400"
+      />
     </div>
   )
 }
