@@ -32,7 +32,9 @@ interface RecentTransactionsProps {
 function TransactionItem({ loss }: { loss: Loss }) {
   const isWin = loss.is_win
   const colorType = loss.type as keyof typeof TYPE_COLOR_STYLES
-  const colors = isWin ? TYPE_COLOR_STYLES.clean : TYPE_COLOR_STYLES[colorType]
+  const colors = isWin
+    ? TYPE_COLOR_STYLES.clean
+    : (TYPE_COLOR_STYLES[colorType] || TYPE_COLOR_STYLES.destructive)
 
   return (
     <div
