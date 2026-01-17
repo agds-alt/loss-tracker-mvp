@@ -52,9 +52,9 @@ export function QuickActions() {
     is_win: false,
   })
 
-  const handleAddLoss = async (type: "casino" | "crypto") => {
+  const handleAddLoss = async (type: "judol" | "crypto") => {
     setLoading(true)
-    const formData = type === "casino" ? casinoForm : cryptoForm
+    const formData = type === "judol" ? casinoForm : cryptoForm
 
     try {
       const validated = lossSchema.parse({
@@ -83,7 +83,7 @@ export function QuickActions() {
       })
 
       // Reset form and close modal
-      if (type === "casino") {
+      if (type === "judol") {
         setCasinoForm({
           site_coin_name: "",
           amount: "",
@@ -271,7 +271,7 @@ export function QuickActions() {
             </Button>
             <Button
               variant={casinoForm.is_win ? "clean" : "casino"}
-              onClick={() => handleAddLoss("casino")}
+              onClick={() => handleAddLoss("judol")}
               disabled={loading}
               className="h-9 sm:h-10 text-xs sm:text-sm"
             >
