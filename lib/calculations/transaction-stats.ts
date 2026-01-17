@@ -6,7 +6,7 @@
 import { Database } from "@/types/database.types"
 
 type Loss = Database["public"]["Tables"]["losses"]["Row"]
-type TransactionType = "casino" | "crypto"
+type TransactionType = "judol" | "crypto"
 
 export interface TransactionStats {
   totalDeposits: number

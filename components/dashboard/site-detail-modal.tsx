@@ -24,7 +24,7 @@ type Loss = Database["public"]["Tables"]["losses"]["Row"]
 
 interface SiteDetailModalProps {
   siteName: string
-  type: "casino" | "crypto"
+  type: "judol" | "crypto"
   isOpen: boolean
   onClose: () => void
 }
@@ -89,10 +89,10 @@ export function SiteDetailModal({ siteName, type, isOpen, onClose }: SiteDetailM
         <div>
           <h3 className="text-2xl font-bold">{siteName}</h3>
           <Badge
-            variant={type === "casino" ? "destructive" : "default"}
-            className={type === "casino" ? "bg-red-500/20 text-red-400" : "bg-yellow-500/20 text-yellow-400"}
+            variant={type === "judol" ? "destructive" : "default"}
+            className={type === "judol" ? "bg-red-500/20 text-red-400" : "bg-yellow-500/20 text-yellow-400"}
           >
-            {type}
+            {type === "judol" ? "casino" : type}
           </Badge>
         </div>
       </div>

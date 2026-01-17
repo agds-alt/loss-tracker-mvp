@@ -77,12 +77,12 @@ function RankingsList({ sites, type, onSiteClick }: {
               </p>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full ${
-                  site.type === "casino"
+                  site.type === "judol"
                     ? "bg-red-500/20 text-red-400"
                     : "bg-yellow-500/20 text-yellow-400"
                 }`}
               >
-                {site.type}
+                {site.type === "judol" ? "casino" : site.type}
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
