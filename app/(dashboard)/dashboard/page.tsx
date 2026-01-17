@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { HeroStats } from "@/components/dashboard/hero-stats"
 import { RecentTransactions } from "@/components/dashboard/recent-transactions"
+import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -24,6 +25,17 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
+  // Get losses from last 7 days for chart
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+  const { data: recentLosses } = await supabase
+    .from("losses")
+    .select("*")
+    .eq("user_id", user.id)
+    .gte("date", sevenDaysAgo.toISOString().split("T")[0])
+    .order("date", { ascending: true })
+
   return (
     <div className="space-y-4 sm:space-y-6 md:space-y-8">
       <div>
@@ -34,6 +46,8 @@ export default async function DashboardPage() {
       </div>
 
       <HeroStats stats={stats} />
+
+      <WeekSummaryChart losses={recentLosses || []} />
 
       <RecentTransactions losses={allLosses || []} />
     </div>

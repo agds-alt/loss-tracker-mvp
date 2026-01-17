@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server"
-import { WeekSummaryChart } from "@/components/dashboard/week-summary-chart"
 import { TopSitesRankings } from "@/components/dashboard/top-sites-rankings"
 import { getTopWithdrawals, getTopDeposits } from "@/lib/db/stats-queries"
 
@@ -10,17 +9,6 @@ export default async function AnalyticsPage() {
   } = await supabase.auth.getUser()
 
   if (!user) return null
-
-  // Get losses from last 7 days for chart
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
-  const { data: recentLosses } = await supabase
-    .from("losses")
-    .select("*")
-    .eq("user_id", user.id)
-    .gte("date", sevenDaysAgo.toISOString().split("T")[0])
-    .order("date", { ascending: true })
 
   // Get top sites rankings - show all sites
   const topWithdrawals = await getTopWithdrawals(supabase, user.id, 999)
@@ -39,8 +27,6 @@ export default async function AnalyticsPage() {
         topWithdrawals={topWithdrawals}
         topDeposits={topDeposits}
       />
-
-      <WeekSummaryChart losses={recentLosses || []} />
     </div>
   )
 }
