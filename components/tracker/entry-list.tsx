@@ -213,7 +213,7 @@ export function EntryList({ losses: initialLosses }: EntryListProps) {
                 Semua
               </Button>
               <Button
-                variant={filter === "judol" ? "judol" : "outline"}
+                variant={filter === "judol" ? "casino" : "outline"}
                 onClick={() => {
                   setFilter("judol")
                   setCurrentPage(1)
