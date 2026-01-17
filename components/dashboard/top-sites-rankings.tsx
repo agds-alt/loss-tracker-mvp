@@ -21,13 +21,18 @@ import { formatCurrency } from "@/lib/utils"
 import { Trophy, TrendingUp, TrendingDown, Medal, Award, ChevronRight } from "lucide-react"
 import { SiteStats } from "@/lib/db/stats-queries"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { SiteDetailModal } from "./site-detail-modal"
 
 interface TopSitesRankingsProps {
   topWithdrawals: SiteStats[]
   topDeposits: SiteStats[]
 }
 
-function RankingsList({ sites, type }: { sites: SiteStats[], type: "withdrawal" | "deposit" }) {
+function RankingsList({ sites, type, onSiteClick }: {
+  sites: SiteStats[]
+  type: "withdrawal" | "deposit"
+  onSiteClick: (site: SiteStats) => void
+}) {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -57,7 +62,8 @@ function RankingsList({ sites, type }: { sites: SiteStats[], type: "withdrawal" 
       {sites.map((site, index) => (
         <div
           key={site.site_coin_name}
-          className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] ${getRankBadge(
+          onClick={() => onSiteClick(site)}
+          className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] cursor-pointer ${getRankBadge(
             index + 1
           )}`}
         >
@@ -115,9 +121,15 @@ function RankingCard({
 }) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [open, setOpen] = useState(false)
+  const [selectedSite, setSelectedSite] = useState<SiteStats | null>(null)
 
   const topThree = sites.slice(0, 3)
   const hasMore = sites.length > 3
+
+  const handleSiteClick = (site: SiteStats) => {
+    setOpen(false) // Close the rankings modal if open
+    setSelectedSite(site)
+  }
 
   const content = (
     <>
@@ -144,7 +156,7 @@ function RankingCard({
           </p>
         ) : (
           <>
-            <RankingsList sites={topThree} type={type} />
+            <RankingsList sites={topThree} type={type} onSiteClick={handleSiteClick} />
 
             {hasMore && (
               <div className="mt-3">
@@ -167,7 +179,7 @@ function RankingCard({
                         </DialogTitle>
                       </DialogHeader>
                       <div className="mt-4">
-                        <RankingsList sites={sites} type={type} />
+                        <RankingsList sites={sites} type={type} onSiteClick={handleSiteClick} />
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -190,7 +202,7 @@ function RankingCard({
                         </DrawerTitle>
                       </DrawerHeader>
                       <div className="p-4 overflow-y-auto">
-                        <RankingsList sites={sites} type={type} />
+                        <RankingsList sites={sites} type={type} onSiteClick={handleSiteClick} />
                       </div>
                     </DrawerContent>
                   </Drawer>
@@ -204,9 +216,21 @@ function RankingCard({
   )
 
   return (
-    <Card className={`border ${borderColor} ${bgGradient}`}>
-      {content}
-    </Card>
+    <>
+      <Card className={`border ${borderColor} ${bgGradient}`}>
+        {content}
+      </Card>
+
+      {/* Site Detail Modal */}
+      {selectedSite && (
+        <SiteDetailModal
+          siteName={selectedSite.site_coin_name}
+          type={selectedSite.type}
+          isOpen={!!selectedSite}
+          onClose={() => setSelectedSite(null)}
+        />
+      )}
+    </>
   )
 }
 
